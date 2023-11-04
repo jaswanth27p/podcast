@@ -35,10 +35,10 @@ const podcasts = [
   },
 ];
 
-const Genres = () => {
+const Latest = () => {
   return (
     <div className="container mx-auto p-4 ">
-      <h2 className=" text-xl p-2 font-semibold">Popular </h2>
+      <h2 className=" text-xl p-2 font-semibold">Latest</h2>
       <div className="overflow-x-auto">
         <div className="flex gap-4 min-w-max ">
           {podcasts.map((podcast, index) => (
@@ -77,5 +77,4 @@ const PodcastCard = ({ title, description, imageUrl, genre, duration }) => {
   );
 };
 
-
-export default Genres;
+export default Latest;
