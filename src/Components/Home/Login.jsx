@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
 const Login = ({ onClose, type, isPopupVisible }) => {
@@ -9,26 +9,29 @@ const Login = ({ onClose, type, isPopupVisible }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [userDetails, setUserDetails] = useState([]);
+  const [error, setError] = useState(false);
 
   const handleToggleForm = () => {
     setIsLogin(!isLogin);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    Axios.get("http://localhost:4000/credentialRoute")
-      .then((res) => {
-        if (res.status === 200) setUserDetails(() => res.data);
-        else Promise.reject();
-      })
-      .catch((err) => alert(err));
-    const loggedInDetails = userDetails.map((userData) => {
-      userData?.email === email ? userData : null;
-    });
+  const registerBeforeLogin = () => {
+    alert("Please register before login");
+    setIsLogin(false);
+  };
+  const validatePassword = (loggedInDetails) => {
+    loggedInDetails.password === password ? navigate("/user") : setError(true);
+  };
+
+  const validateRegisterLogin = (resData) => {
+    const loggedInDetails =
+      resData?.find((userData) => userData?.email === email) || null;
+
     if (isLogin) {
       // Perform login logic here
-      loggedInDetails === null ? alert("Please register before login") : navigate("/user");
+      loggedInDetails === null
+        ? registerBeforeLogin()
+        : validatePassword(loggedInDetails);
     } else {
       // Perform registration logic here
       // You can access the values of `username`, `password`, `email`, and `mobile` for registration
@@ -42,17 +45,29 @@ const Login = ({ onClose, type, isPopupVisible }) => {
       setPassword("");
       setEmail("");
       setIsLogin(true);
-      loggedInDetails===null ?
-      Axios.post(
-        "http://localhost:4000/credentialRoute/create-credential",
-        userData
-      )
-        .then((res) => {
-          if (res.status === 200) alert("Registered successfully");
-          else Promise.reject();
-        })
-        .catch((err) => alert(err)) : alert("user already exists");
+      loggedInDetails === null
+        ? Axios.post(
+            "http://localhost:4000/credentialRoute/create-credential",
+            userData
+          )
+            .then((res) => {
+              if (res.status === 200) alert("Registered successfully");
+              else Promise.reject();
+            })
+            .catch((err) => alert(err))
+        : alert("user already exists");
     }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    Axios.get("http://localhost:4000/credentialRoute")
+      .then((res) => {
+        if (res.status === 200) {
+          validateRegisterLogin(res.data);
+        } else Promise.reject();
+      })
+      .catch((err) => alert(err));
   };
 
   return (
@@ -66,23 +81,34 @@ const Login = ({ onClose, type, isPopupVisible }) => {
           {isLogin ? type + " Login" : type + " Register"}
         </h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            {isLogin ? (
-              <label className="block text-gray-700 text-sm font-semibold">
-                Email
-              </label>
-            ) : (
+          {!isLogin && (
+            <div className="mb-4">
               <label className="block text-gray-700 text-sm font-semibold">
                 Username
               </label>
-            )}
+              <input
+                type="text"
+                className="w-full p-2 border rounded-lg"
+                value={isLogin ? email : username}
+                onChange={(e) =>
+                  isLogin
+                    ? setEmail(e.target.value)
+                    : setUsername(e.target.value)
+                }
+                required
+              />
+            </div>
+          )}
+
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-semibold">
+              Email
+            </label>
             <input
-              type="text"
+              type="email"
               className="w-full p-2 border rounded-lg"
-              value={isLogin ? email : username}
-              onChange={(e) =>
-                isLogin ? setEmail(e.target.value) : setUsername(e.target.value)
-              }
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
@@ -97,23 +123,12 @@ const Login = ({ onClose, type, isPopupVisible }) => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            <div>
+              {error && (
+                <p className="text-red-500 text-sm">Incorrect Password</p>
+              )}
+            </div>
           </div>
-          {isLogin ? null : (
-            <>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-semibold">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  className="w-full p-2 border rounded-lg"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-            </>
-          )}
           <button
             type="submit"
             className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg mb-4"
