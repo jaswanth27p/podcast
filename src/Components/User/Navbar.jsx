@@ -51,10 +51,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-
-
 export default function ButtonAppBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [logoutBtn, setLogoutBtn] = useState(false);
+
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -69,7 +69,7 @@ export default function ButtonAppBar() {
               PodCast
             </Typography>
 
-            <Search className="hidden md:block  mr-4 text-black">
+            <Search className="hidden md:block border    mr-4 text-black">
               <SearchIconWrapper>
                 <SearchIcon />
               </SearchIconWrapper>
@@ -78,7 +78,10 @@ export default function ButtonAppBar() {
                 inputProps={{ "aria-label": "search" }}
               />
             </Search>
-            <button className="block px-4 py-2 text-lg text-gray-800 hover:bg-gray-100">
+            <button
+              onClick={() => setLogoutBtn(!logoutBtn)}
+              className="hidden md:block px-4 py-2 text-lg text-gray-800 hover:bg-gray-100"
+            >
               Username
             </button>
 
@@ -98,6 +101,15 @@ export default function ButtonAppBar() {
           </Toolbar>
         </AppBar>
       </Box>
+
+      {logoutBtn  && (
+        <div className="hidden md:block absolute top-15 right-10   ">
+            <button className="bg-red-600  rounded block px-4 py-2 text-lg text-gray-100 hover:bg-gray-100">
+              Logout
+            </button>
+        </div>
+      )}
+
       {isMenuOpen && (
         <div className="fixed top-0 left-0 w-screen h-screen flex items-top justify-end z-50 bg-white bg-opacity-70">
           <div className="bg-white pt-10 p-4 rounded-md shadow-md">
@@ -120,7 +132,7 @@ export default function ButtonAppBar() {
               Username
             </button>
 
-            <button className="block px-4 py-2 text-lg text-gray-800 hover:bg-gray-100">
+            <button className="block px-4 py-2 text-lg text-red-400 hover:bg-gray-100">
               Logout
             </button>
           </div>
