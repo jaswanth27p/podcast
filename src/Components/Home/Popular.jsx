@@ -31,7 +31,7 @@ const Popular = () => {
     <>
      
       <div className=" bg-gray-50 container mt-3 mx-auto py-5">
-        <div className="grid  grid-cols-3  py-10 gap-4">
+        <div className="grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-3 py-10 gap-4">
           {cards.map((card, index) => (
             <Card key={index} {...card} />
           ))}
@@ -42,7 +42,7 @@ const Popular = () => {
 }
 
 const Card = ({ imageSrc, name, description }) => (
-  <div className="bg-white rounded-lg shadow-xl">
+  <div className="bg-white rounded-lg shadow-xl max-w-sm m-auto">
     <div className="h-32 mt-4 ">
       <img src={imageSrc} alt="Image" className="mx-auto h-full rounded-full" />
     </div>
