@@ -2,6 +2,7 @@
 import { useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import { Link } from "react-router-dom";
 
 const Navbar = ({ onOpen }) => {
   const scrollToSection = (sectionId) => {
@@ -20,6 +21,7 @@ const Navbar = ({ onOpen }) => {
           <span className="text-2xl font-bold">PodCast</span>
         </div>
         <div className="hidden md:flex space-x-6">
+          <Link to="/user">Go to User</Link>
           <button
             onClick={() => scrollToSection("popular")}
             className="hover:text-blue-300"
@@ -44,7 +46,7 @@ const Navbar = ({ onOpen }) => {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="hover:text-blue-300"
           >
-            {!isMenuOpen &&   <MenuIcon />}
+            {!isMenuOpen && <MenuIcon />}
           </button>
         </div>
       </nav>
@@ -58,6 +60,7 @@ const Navbar = ({ onOpen }) => {
             >
               <CloseIcon />
             </button>
+            <Link to="/user">Go to User</Link>
             <button
               onClick={() => scrollToSection("popular")}
               className="block px-4 py-2 text-lg text-gray-800 hover:bg-gray-100"
