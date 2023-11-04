@@ -3,13 +3,22 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
-const Login = ({ onClose, type, isPopupVisible }) => {
+const Login = ({ setPopupVisible, type, isPopupVisible }) => {
   const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [error, setError] = useState(false);
+  const [error, setError] = useState({
+    passwordError: false,
+    userTypeError: false,
+  });
+  const userErrorMessage = `Please Login as ${type}`;
+
+  const onClose = () => {
+    setPopupVisible(false);
+    setError({ ...error, userTypeError: false });
+  };
 
   const handleToggleForm = () => {
     setIsLogin(!isLogin);
@@ -20,13 +29,21 @@ const Login = ({ onClose, type, isPopupVisible }) => {
     setIsLogin(false);
   };
   const validatePassword = (loggedInDetails) => {
-    loggedInDetails.password === password ? navigate("/user") : setError(true);
+    if (loggedInDetails.type === type) {
+      loggedInDetails.password === password
+        ? navigate("/user")
+        : setError({ ...error, passwordError: true });
+    } else {
+      setError({ ...error, userTypeError: true });
+      setUsername("");
+      setPassword("");
+      setEmail("");
+    }
   };
 
   const validateRegisterLogin = (resData) => {
     const loggedInDetails =
       resData?.find((userData) => userData?.email === email) || null;
-
     if (isLogin) {
       // Perform login logic here
       loggedInDetails === null
@@ -80,6 +97,9 @@ const Login = ({ onClose, type, isPopupVisible }) => {
         <h2 className="text-2xl font-bold mb-4 text-center">
           {isLogin ? type + " Login" : type + " Register"}
         </h2>
+        {error?.userTypeError && (
+          <p className="text-red-500 text-sm">{userErrorMessage}</p>
+        )}
         <form onSubmit={handleSubmit}>
           {!isLogin && (
             <div className="mb-4">
@@ -123,11 +143,9 @@ const Login = ({ onClose, type, isPopupVisible }) => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <div>
-              {error && (
-                <p className="text-red-500 text-sm">Incorrect Password</p>
-              )}
-            </div>
+            {error.passwordError && (
+              <p className="text-red-500 text-sm">Incorrect Password</p>
+            )}
           </div>
           <button
             type="submit"
