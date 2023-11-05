@@ -18,10 +18,11 @@ const Navbar = ({ onOpen }) => {
     <>
       <nav className="bg-gray-50 p-2 container m-auto flex justify-between items-center">
         <div className="flex items-center">
-          <span className="text-2xl font-bold">PodCast</span>
+          <Link to="/">
+            <span className="text-2xl font-bold">PodCast</span>
+          </Link>
         </div>
         <div className="hidden md:flex space-x-6">
-          <Link to="/user">Go to User</Link>
           <button
             onClick={() => scrollToSection("popular")}
             className="hover:text-blue-300"

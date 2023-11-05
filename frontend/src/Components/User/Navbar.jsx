@@ -9,6 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import { Link } from "react-router-dom";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -66,7 +67,9 @@ export default function ButtonAppBar() {
               component="div"
               sx={{ flexGrow: 1 }}
             >
-              PodCast
+              <Link to="/">
+                PodCast
+              </Link>
             </Typography>
 
             <Search className="hidden md:block border    mr-4 text-black">
@@ -102,11 +105,11 @@ export default function ButtonAppBar() {
         </AppBar>
       </Box>
 
-      {logoutBtn  && (
+      {logoutBtn && (
         <div className="hidden md:block absolute top-15 right-10   ">
-            <button className="bg-red-600  rounded block px-4 py-2 text-lg text-gray-100 hover:bg-gray-100">
-              Logout
-            </button>
+          <button className="bg-red-600  rounded block px-4 py-2 text-lg text-gray-100 hover:bg-gray-100">
+            Logout
+          </button>
         </div>
       )}
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -9,82 +10,70 @@ const Login = ({ setPopupVisible, type, isPopupVisible }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [error, setError] = useState({
-    passwordError: false,
-    userTypeError: false,
-  });
-  const userErrorMessage = `Please Login as ${type}`;
+  const [error, setError] = useState("");
 
   const onClose = () => {
     setPopupVisible(false);
-    setError({ ...error, userTypeError: false });
+    setEmail("");
+    setPassword("");
+    setUsername("");
+    setError("");
   };
 
   const handleToggleForm = () => {
     setIsLogin(!isLogin);
-  };
-
-  const registerBeforeLogin = () => {
-    alert("Please register before login");
-    setIsLogin(false);
-  };
-  const validatePassword = (loggedInDetails) => {
-    if (loggedInDetails.type === type) {
-      loggedInDetails.password === password
-        ? navigate("/user")
-        : setError({ ...error, passwordError: true });
-    } else {
-      setError({ ...error, userTypeError: true });
-      setUsername("");
-      setPassword("");
-      setEmail("");
-    }
-  };
-
-  const validateRegisterLogin = (resData) => {
-    const loggedInDetails =
-      resData?.find((userData) => userData?.email === email) || null;
-    if (isLogin) {
-      // Perform login logic here
-      loggedInDetails === null
-        ? registerBeforeLogin()
-        : validatePassword(loggedInDetails);
-    } else {
-      // Perform registration logic here
-      // You can access the values of `username`, `password`, `email`, and `mobile` for registration
-      const userData = {
-        userName: username,
-        password: password,
-        email: email,
-        type: type,
-      };
-      setUsername("");
-      setPassword("");
-      setEmail("");
-      setIsLogin(true);
-      loggedInDetails === null
-        ? Axios.post(
-            "http://localhost:4000/credentialRoute/create-credential",
-            userData
-          )
-            .then((res) => {
-              if (res.status === 200) alert("Registered successfully");
-              else Promise.reject();
-            })
-            .catch((err) => alert(err))
-        : alert("user already exists");
-    }
+    setEmail("");
+    setPassword("");
+    setUsername("");
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    Axios.get("http://localhost:4000/credentialRoute")
+    const requestData = {};
+    if (isLogin) {
+      // For Login
+      requestData.email = email;
+      requestData.password = password;
+      requestData.role = type.toLowerCase();
+    } else {
+      // For Registration
+      requestData.username = username;
+      requestData.email = email;
+      requestData.password = password;
+      requestData.role = type.toLowerCase();
+    }
+
+    Axios.post(
+      isLogin
+        ? "http://localhost:3000/credentials/login"
+        : "http://localhost:3000/credentials/register",
+      requestData
+    )
       .then((res) => {
-        if (res.status === 200) {
-          validateRegisterLogin(res.data);
-        } else Promise.reject();
+        if (isLogin) {
+          if (res.status === 200) {
+            if (type.toLowerCase()==="user"){
+              navigate("/user")
+            }else{
+              navigate("/admin");
+            }
+          } else {
+            setError(res.data.message);
+          }
+        } else {
+          if (res.status === 201) {
+            alert("Registration Successful");
+            handleToggleForm();
+          } else {
+            setError(res.data.message);
+          }
+        }
       })
-      .catch((err) => alert(err));
+      .catch((res,err) => {
+        console.log(res.response.data.message)
+        setError(res.response.data.message);
+      });
   };
 
   return (
@@ -97,9 +86,7 @@ const Login = ({ setPopupVisible, type, isPopupVisible }) => {
         <h2 className="text-2xl font-bold mb-4 text-center">
           {isLogin ? type + " Login" : type + " Register"}
         </h2>
-        {error?.userTypeError && (
-          <p className="text-red-500 text-sm">{userErrorMessage}</p>
-        )}
+        {error && <p className="text-red-500 text-center text-sm">{error}</p>}
         <form onSubmit={handleSubmit}>
           {!isLogin && (
             <div className="mb-4">
@@ -109,12 +96,8 @@ const Login = ({ setPopupVisible, type, isPopupVisible }) => {
               <input
                 type="text"
                 className="w-full p-2 border rounded-lg"
-                value={isLogin ? email : username}
-                onChange={(e) =>
-                  isLogin
-                    ? setEmail(e.target.value)
-                    : setUsername(e.target.value)
-                }
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </div>
@@ -143,9 +126,6 @@ const Login = ({ setPopupVisible, type, isPopupVisible }) => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            {error.passwordError && (
-              <p className="text-red-500 text-sm">Incorrect Password</p>
-            )}
           </div>
           <button
             type="submit"
