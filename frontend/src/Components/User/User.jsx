@@ -11,10 +11,10 @@ import { useNavigate } from "react-router-dom";
 const User = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
-
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   useEffect(() => {
     // Make an API request to get user data
-    fetch("https://podcast-3cku.onrender.com/auth/user", {
+    fetch(`${backendUrl}/auth/user`, {
       method: "GET",
       credentials: "include",
     })
@@ -31,7 +31,7 @@ const User = () => {
       .catch((error) => {
         navigate("/");
       });
-  }, [navigate]);
+  }, [navigate ,backendUrl]);
 
   if (!userData) {
     return null; // Return early if userData is not available

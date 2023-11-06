@@ -43,11 +43,11 @@ const Login = ({ setPopupVisible, type, isPopupVisible }) => {
       requestData.password = password;
       requestData.role = type.toLowerCase();
     }
-
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
     Axios.post(
       isLogin
-        ? "https://podcast-3cku.onrender.com/credentials/login"
-        : "https://podcast-3cku.onrender.com/credentials/register",
+        ? `${backendUrl}/credentials/login`
+        : `${backendUrl}/credentials/register`,
       requestData,
       {
         withCredentials: true,

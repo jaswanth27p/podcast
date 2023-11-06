@@ -11,10 +11,10 @@ function Admin() {
   const [audioUrls, setAudioUrls] = useState([]);
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
-
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   useEffect(() => {
     // Make an API request to get user data
-    fetch("https://podcast-3cku.onrender.com/auth/admin", {
+    fetch(`${backendUrl}/auth/admin`, {
       method: "GET",
       credentials: "include",
     })
@@ -31,7 +31,7 @@ function Admin() {
       .catch((error) => {
         navigate("/");
       });
-  }, [navigate]);
+  }, [navigate , backendUrl]);
 
   if (!userData) {
     return null; // Return early if userData is not available

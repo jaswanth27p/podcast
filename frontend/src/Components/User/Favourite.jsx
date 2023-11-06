@@ -12,11 +12,11 @@ const favourites = ["Play list 1", "favourites", "Old songs"];
 
 export default function Favourite() {
   const getRandomColor = () => {
-    const letters = "0123456789ABCDEF";
-    let color = "#";
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
+    const red = Math.floor(Math.random() * 128 + 100);  
+    const green = Math.floor(Math.random() * 128 + 100);  
+    const blue = Math.floor(Math.random() * 128 + 100);  
+    // Convert the components to a CSS color string
+    const color = `rgb(${red}, ${green}, ${blue})`;
     return color;
   };
   return (
