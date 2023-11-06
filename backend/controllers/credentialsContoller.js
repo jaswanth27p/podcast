@@ -55,7 +55,7 @@ const login = async (req, res) => {
         secure: true,
         sameSite: "none",
       });  
-      res.status(200).json({ message: "Login successful" , jwt : token });
+      res.status(200).json({ message: "Login successful"});
     }
   } catch (error) {
     console.error("Error during login:", error);
