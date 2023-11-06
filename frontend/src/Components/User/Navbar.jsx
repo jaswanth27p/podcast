@@ -10,6 +10,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -52,9 +53,18 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function ButtonAppBar() {
+export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [logoutBtn, setLogoutBtn] = useState(false);
+  const navigate = useNavigate()
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const handleLogout = () => {
+    fetch(`${backendUrl}/auth/logout`, {
+      method: "GET",
+      credentials: "include",
+    })
+    navigate("/");
+  };
 
   return (
     <>
@@ -107,7 +117,7 @@ export default function ButtonAppBar() {
 
       {logoutBtn && (
         <div className="hidden md:block absolute top-15 right-10   ">
-          <button className="bg-red-600  rounded block px-4 py-2 text-lg text-gray-100 hover:bg-gray-100">
+          <button onClick={handleLogout} className="bg-red-600  rounded block px-4 py-2 text-lg text-gray-100 hover:bg-gray-100">
             Logout
           </button>
         </div>
@@ -135,7 +145,7 @@ export default function ButtonAppBar() {
               Username
             </button>
 
-            <button className="block px-4 py-2 text-lg text-red-400 hover:bg-gray-100">
+            <button onClick={handleLogout} className="block px-4 py-2 text-lg text-red-400 hover:bg-gray-100">
               Logout
             </button>
           </div>
