@@ -7,7 +7,6 @@ import Login from "./Login";
 import Navbar from "./Navbar";
 import Popular from "./Popular";
 import { useState } from "react";
-import Loading from "./loading";
 
 export default function App() {
   const [isPopupVisible, setPopupVisible] = useState(false);
@@ -34,7 +33,6 @@ export default function App() {
         <Contact />
       </div>
       <Fotter />
-      <Loading/>
     </>
   );
 }
