@@ -6,7 +6,9 @@ const cookieParser = require("cookie-parser");
 
 // Middleware to parse JSON data
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(
+  cors({ origin: "https://podcast-jaswanth27p.vercel.app", credentials: true })
+);
 app.use(cookieParser());
 
 //Import and use the routers
