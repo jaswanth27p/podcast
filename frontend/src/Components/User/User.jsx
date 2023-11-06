@@ -7,26 +7,16 @@ import Latest from "./Latest";
 import Fotter from "../Home/Fotter";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import Cookies from 'js-cookie';
 
 const User = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    // const token = Cookies.get('token');
-    // console.log(token)
-    const token = localStorage.getItem("token"); // Retrieve the JWT token from local storage
-    if (!token) {
-      navigate("/");
-      return; // Return early to avoid making unnecessary requests
-    }
     // Make an API request to get user data
-    fetch("http://localhost:3000/api/user-data", {
+    fetch("https://podcast-3cku.onrender.com/auth/user", {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`, // Include the JWT token in the headers
-      },
+      credentials: "include",
     })
       .then((response) => {
         if (!response.ok) {
@@ -37,10 +27,6 @@ const User = () => {
       })
       .then((data) => {
         setUserData(data.user);
-
-        if (data.user.role !== "user") {
-          navigate("/");
-        }
       })
       .catch((error) => {
         navigate("/");
@@ -53,6 +39,11 @@ const User = () => {
   return (
     <>
       <Navbar />
+      <div>
+        <h2>Welcome, {userData.username}!</h2>
+        <p>Email: {userData.email}</p>
+        <p>Role: {userData.role}</p>
+      </div>
       <Popular />
       <Favourite />
       <Latest />

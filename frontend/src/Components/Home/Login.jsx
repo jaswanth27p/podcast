@@ -46,8 +46,8 @@ const Login = ({ setPopupVisible, type, isPopupVisible }) => {
 
     Axios.post(
       isLogin
-        ? "http://localhost:3000/credentials/login"
-        : "http://localhost:3000/credentials/register",
+        ? "https://podcast-3cku.onrender.com/credentials/login"
+        : "https://podcast-3cku.onrender.com/credentials/register",
       requestData,
       {
         withCredentials: true,
@@ -56,7 +56,7 @@ const Login = ({ setPopupVisible, type, isPopupVisible }) => {
       .then((res) => {
         if (isLogin) {
           if (res.status === 200) {
-            localStorage.setItem("token", res.data.jwt);
+            //localStorage.setItem("token", res.data.jwt);
             if (type.toLowerCase() === "user") {
               navigate("/user");
             } else {
