@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
-const dbConfig = {
-  host: "localhost", // MongoDB host (replace with your database host)
-  port: "3001", // MongoDB port (replace with your database port)
-  dbName: "podcast", // Replace with your database name
-};
+// const dbConfig = {
+//   host: "localhost", // MongoDB host (replace with your database host)
+//   port: "3001", // MongoDB port (replace with your database port)
+//   dbName: "podcast", // Replace with your database name
+// };
 mongoose.set("strictQuery", true);
 mongoose.connect(
   `mongodb+srv://niteeshch57:12345@podcast-db.g14bwz8.mongodb.net/podcast`,

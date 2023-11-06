@@ -7,7 +7,10 @@ const cookieParser = require("cookie-parser");
 // Middleware to parse JSON data
 app.use(express.json());
 app.use(
-  cors({ origin: "https://podcast-jaswanth27p.vercel.app", credentials: true })
+  cors({
+    origin: ["https://podcast-jaswanth27p.vercel.app", "http://localhost:3000"],
+    credentials: true,
+  })
 );
 app.use(cookieParser());
 

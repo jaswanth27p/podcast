@@ -18,7 +18,6 @@ const register = async (req, res) => {
       password : password,
       role : role,
     });
-    console.log(newUser)
     await newUser.save();
 
     res.status(201).json({ message: "Registration successful" });
@@ -50,11 +49,11 @@ const login = async (req, res) => {
         username: user.username,
         role,
       });  
-      res.cookie("token", token, {
+      res.cookie("token", token , {
         httpOnly: true,
         secure: true,
         sameSite: "none",
-      });  
+      });
       res.status(200).json({ message: "Login successful"});
     }
   } catch (error) {

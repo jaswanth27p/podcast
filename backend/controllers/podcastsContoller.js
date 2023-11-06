@@ -24,10 +24,10 @@ const createPodcast = async (req, res) => {
 
 // Controller function to retrieve podcasts
 const getPodcast = async (req, res) => {
-    const Title = req.query.title;
+    const id= req.query.id;
   try {
     // Retrieve a list of podcasts from the database
-    const podcasts = await Podcasts.find({title :Title});
+    const podcasts = await Podcasts.find({_id :id});
     res.status(200).json(podcasts);
   } catch (error) {
     console.error("Error fetching podcasts:", error);
