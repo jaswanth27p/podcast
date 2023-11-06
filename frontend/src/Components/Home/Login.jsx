@@ -48,14 +48,18 @@ const Login = ({ setPopupVisible, type, isPopupVisible }) => {
       isLogin
         ? "http://localhost:3000/credentials/login"
         : "http://localhost:3000/credentials/register",
-      requestData
+      requestData,
+      {
+        withCredentials: true,
+      }
     )
       .then((res) => {
         if (isLogin) {
           if (res.status === 200) {
-            if (type.toLowerCase()==="user"){
-              navigate("/user")
-            }else{
+            localStorage.setItem("token", res.data.jwt);
+            if (type.toLowerCase() === "user") {
+              navigate("/user");
+            } else {
               navigate("/admin");
             }
           } else {
@@ -70,8 +74,7 @@ const Login = ({ setPopupVisible, type, isPopupVisible }) => {
           }
         }
       })
-      .catch((res,err) => {
-        console.log(res.response.data.message)
+      .catch((res, err) => {
         setError(res.response.data.message);
       });
   };
