@@ -1,20 +1,19 @@
-/* eslint-disable no-unused-vars */
-import {   useState } from "react";
-import { storage } from "../../firebase.js";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { v4 } from "uuid";
-import { useEffect } from "react";
+import React from "react";
+import Navbar from "./Navbar";
+import Uplod from "./Uplod";
+import FileUpload from "./FileUpload";
+import Genre from "./Genre";
+import AudioItem from "./AudioItem";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Admin() {
-  const [audio, setAudio] = useState(null);
-  const [audioUrls, setAudioUrls] = useState([]);
+function Creator() {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState(null);
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const [creatorData, setCreatorData] = useState(null);
+
   useEffect(() => {
     // Make an API request to get user data
-    fetch(`${backendUrl}/auth/admin`, {
+    fetch("https://podcast-3cku.onrender.com/auth/admin", {
       method: "GET",
       credentials: "include",
     })
@@ -26,53 +25,34 @@ function Admin() {
         return response.json();
       })
       .then((data) => {
-        setUserData(data.user);
+        setCreatorData(data.user);
       })
       .catch((error) => {
         navigate("/");
       });
-  }, [navigate , backendUrl]);
+  }, [navigate]);
 
-  if (!userData) {
+  if (!creatorData) {
     return null; // Return early if userData is not available
   }
-
-  const handleClick = () => {
-    if (audio !== null) {
-      const audioRef = ref(storage, `audio/${v4()}`);
-      uploadBytes(audioRef, audio).then((value) => {
-        console.log(value);
-        getDownloadURL(value.ref).then((url) => {
-          setAudioUrls((data) => [...data, url]);
-        });
-      });
-    }
-  };
-
   return (
-    <div className="App">
+    <div>
+      <Navbar />
       <div>
-        <h2>Welcome, {userData.username}!</h2>
-        <p>Email: {userData.email}</p>
-        <p>Role: {userData.role}</p>
+        <h2>Welcome, {creatorData.username}!</h2>
+        <p>Email: {creatorData.email}</p>
+        <p>Role: {creatorData.role}</p>
       </div>
-      <input
-        type="file"
-        accept="audio/*"
-        onChange={(e) => setAudio(e.target.files[0])}
-      />
-      <button onClick={handleClick}>Upload Audio</button>
-      <br />
-      {audioUrls.map((audioUrl, index) => (
-        <div key={index}>
-          <audio controls>
-            <source src={audioUrl} type="audio/mpeg" />
-            Your browser does not support the audio element.
-          </audio>
-          <br />
-        </div>
-      ))}
+
+      <div className="flex">
+      <Uplod />
+      <FileUpload />
+      <Genre />
+      </div>
+
+      <AudioItem />
     </div>
   );
 }
-export default Admin;
+
+export default Creator;
