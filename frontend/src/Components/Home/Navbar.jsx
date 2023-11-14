@@ -16,8 +16,8 @@ const Navbar = ({ onOpen }) => {
 
   return (
     <>
-      <nav className="bg-gray-50 p-2 container m-auto flex justify-between items-center">
-        <div className="flex items-center">
+      <nav className="bg-blue-100 p-3 rounded-lg shadow container m-auto flex justify-between items-center">
+        <div className="flex items-center ml-3">
           <Link to="/">
             <span className="text-2xl font-bold">PodCast</span>
           </Link>
@@ -25,21 +25,23 @@ const Navbar = ({ onOpen }) => {
         <div className="hidden md:flex space-x-6">
           <button
             onClick={() => scrollToSection("popular")}
-            className="hover:text-blue-300"
+            className="group relative px-2 py-1"
           >
             Popular
+            <span className="absolute left-0 bottom-0 h-1 bg-blue-300 w-0 transition-all duration-500 group-hover:w-full"></span>
           </button>
           <button
             onClick={() => scrollToSection("contact")}
-            className="hover:text-blue-300"
+            className="group relative px-2 py-1"
           >
             Contact Us
+            <span className="absolute left-0 bottom-0 h-1 bg-blue-300 w-0 transition-all duration-500 group-hover:w-full"></span>
           </button>
           <button
             onClick={() => onOpen("User")}
-            className="hover:text-blue-300"
+            className="bg-blue-500 text-white rounded-lg px-2 py-2 hover:bg-gray-500"
           >
-            Login/Register
+            LogIn/Register
           </button>
         </div>
         <div className="md:hidden">
@@ -54,29 +56,28 @@ const Navbar = ({ onOpen }) => {
 
       {isMenuOpen && (
         <div className="fixed top-0 left-0 w-screen h-screen flex items-top justify-end z-50 bg-white bg-opacity-70">
-          <div className="bg-white pt-6 p-4 rounded-md shadow-md">
+          <div className="bg-blue-500 text-white pt-6 p-4 rounded-md shadow-md">
             <button
               onClick={() => setIsMenuOpen(false)}
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              className="absolute top-2 right-2 hover:text-gray-700"
             >
               <CloseIcon />
             </button>
-            <Link to="/user">Go to User</Link>
             <button
               onClick={() => scrollToSection("popular")}
-              className="block px-4 py-2 text-lg text-gray-800 hover:bg-gray-100"
+              className="block px-4 py-2 text-lg"
             >
               Popular
             </button>
             <button
               onClick={() => scrollToSection("contact")}
-              className="block px-4 py-2 text-lg text-gray-800 hover:bg-gray-100"
+              className="block px-4 py-2 text-lg"
             >
               Contact Us
             </button>
             <button
               onClick={() => onOpen("User")}
-              className="block px-4 py-2 text-lg text-gray-800 hover:bg-gray-100"
+              className="block px-4 py-2 text-lg"
             >
               Login/Register
             </button>
