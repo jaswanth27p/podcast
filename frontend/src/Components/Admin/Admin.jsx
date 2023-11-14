@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import Navbar from "./Navbar";
 import Uplod from "./Uplod";
@@ -6,14 +7,17 @@ import Genre from "./Genre";
 import AudioItem from "./AudioItem";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { storage } from "../../firebase.js";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { v4 } from "uuid";
 
 function Creator() {
   const navigate = useNavigate();
   const [creatorData, setCreatorData] = useState(null);
-
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   useEffect(() => {
     // Make an API request to get user data
-    fetch("https://podcast-3cku.onrender.com/auth/admin", {
+    fetch(`${backendUrl}/auth/admin`, {
       method: "GET",
       credentials: "include",
     })
@@ -30,11 +34,23 @@ function Creator() {
       .catch((error) => {
         navigate("/");
       });
-  }, [navigate]);
+  }, [navigate ,backendUrl]);
 
   if (!creatorData) {
     return null; // Return early if userData is not available
   }
+
+  // const handleClick = () => {
+  //   if (audio !== null) {
+  //     const audioRef = ref(storage, `audio/${v4()}`);
+  //     uploadBytes(audioRef, audio).then((value) => {
+  //       console.log(value);
+  //       getDownloadURL(value.ref).then((url) => {
+  //         setAudioUrls((data) => [...data, url]);
+  //       });
+  //     });
+  //   }
+  // };
   return (
     <div>
       <Navbar />
@@ -43,13 +59,11 @@ function Creator() {
         <p>Email: {creatorData.email}</p>
         <p>Role: {creatorData.role}</p>
       </div>
-
       <div className="flex">
       <Uplod />
       <FileUpload />
-      <Genre />
+      {/* <Genre /> */}
       </div>
-
       <AudioItem />
     </div>
   );

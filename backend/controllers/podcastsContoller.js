@@ -2,7 +2,11 @@ const Podcasts = require("../models/podcasts");
 
 // Controller function to create a new podcast
 const createPodcast = async (req, res) => {
-  const { title, description, author, audio_url, user_id } = req.body;
+  const { title, description, audio_url } = req.body;
+
+  // Extract user information from JWT (assuming you are using a middleware to set user info in req.user)
+  const { id: user_id, username: author } = req.user;
+
   try {
     // Create a new podcast document
     const newPodcast = new Podcasts({
@@ -12,13 +16,25 @@ const createPodcast = async (req, res) => {
       audio_url,
       user_id,
     });
-
     // Save the new podcast to the database
     await newPodcast.save();
     res.status(201).json({ message: "Podcast created successfully" });
   } catch (error) {
     console.error("Error creating podcast:", error);
     res.status(500).json({ message: "Failed to create podcast" });
+  }
+};
+
+// Controller function to get a list of podcasts by user_id
+const getPodcastsByUser = async (req, res) => {
+  const { id: user_id } = req.user;
+  try {
+    // Retrieve a list of podcasts from the database based on user_id
+    const podcasts = await Podcasts.find({ user_id });
+    res.status(200).json(podcasts);
+  } catch (error) {
+    console.error("Error fetching podcasts by user_id:", error);
+    res.status(500).json({ message: "Failed to fetch podcasts by user_id" });
   }
 };
 
@@ -91,5 +107,6 @@ module.exports = {
   getPodcast,
   updatePodcast,
   deletePodcast,
+  getPodcastsByUser,
   // Add other controller functions here
 };

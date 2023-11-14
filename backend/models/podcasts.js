@@ -13,6 +13,12 @@ const podcastsSchema = new mongoose.Schema({
     ref: "Credentials",
     required: true,
   },
+  // categories: [
+  //   {
+  //     type: mongoose.Schema.Types.ObjectId,
+  //     ref: "Category",
+  //   },
+  // ],
   // Other podcast-related fields (e.g., duration, upload date)
 });
 
