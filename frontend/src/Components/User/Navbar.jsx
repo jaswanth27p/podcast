@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -53,7 +54,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function Navbar() {
+export default function Navbar({user}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [logoutBtn, setLogoutBtn] = useState(false);
   const navigate = useNavigate()
@@ -95,7 +96,7 @@ export default function Navbar() {
               onClick={() => setLogoutBtn(!logoutBtn)}
               className="hidden md:block px-4 py-2 text-lg text-gray-800 hover:bg-gray-100"
             >
-              Username
+              {user.username}
             </button>
 
             <div className="md:hidden">

@@ -1,9 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
-import Navbar from "./Navbar";
+import Navbar from "../User/Navbar.jsx";
 import Uplod from "./Uplod";
 import FileUpload from "./FileUpload";
-import Genre from "./Genre";
 import AudioItem from "./AudioItem";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -53,7 +52,7 @@ function Creator() {
   // };
   return (
     <div>
-      <Navbar />
+      <Navbar user={creatorData} />
       <div>
         <h2>Welcome, {creatorData.username}!</h2>
         <p>Email: {creatorData.email}</p>
@@ -62,7 +61,6 @@ function Creator() {
       <div className="flex">
       <Uplod />
       <FileUpload />
-      {/* <Genre /> */}
       </div>
       <AudioItem />
     </div>

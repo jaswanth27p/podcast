@@ -38,12 +38,7 @@ const User = () => {
   }
   return (
     <>
-      <Navbar />
-      <div>
-        <h2>Welcome, {userData.username}!</h2>
-        <p>Email: {userData.email}</p>
-        <p>Role: {userData.role}</p>
-      </div>
+      <Navbar user={userData} />
       <Popular />
       <Favourite />
       <Latest />

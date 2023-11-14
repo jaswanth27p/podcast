@@ -1,9 +1,15 @@
 import { useState, useEffect } from "react";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import { storage } from "../../firebase.js";
-import { ref, deleteObject} from "firebase/storage";
+import { ref, deleteObject } from "firebase/storage";
 
 function AudioItem() {
   const [podcasts, setPodcasts] = useState([]);
+  const [filteredPodcasts, setFilteredPodcasts] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [categories, setCategories] = useState(["All"]); // Include "All" in the initial categories
 
   useEffect(() => {
     const fetchPodcasts = async () => {
@@ -15,6 +21,13 @@ function AudioItem() {
         });
         const data = await response.json();
         setPodcasts(data);
+        setFilteredPodcasts(data);
+
+        // Extract unique categories from podcasts
+        const uniqueCategories = Array.from(
+          new Set(data.flatMap((podcast) => podcast.genres))
+        );
+        setCategories(["All", ...uniqueCategories]); // Include "All" in the categories
       } catch (error) {
         console.error("Error fetching podcasts:", error);
       }
@@ -37,8 +50,8 @@ function AudioItem() {
       });
 
       if (response.ok) {
-        // Remove the deleted podcast from the state
-        setPodcasts((prevPodcasts) =>
+        // Remove the deleted podcast from the filtered state
+        setFilteredPodcasts((prevPodcasts) =>
           prevPodcasts.filter((podcast) => podcast._id !== podcastId)
         );
       } else {
@@ -49,9 +62,45 @@ function AudioItem() {
     }
   };
 
+  const handleFilterChange = (category) => {
+    setAnchorEl(null);
+    setFilteredPodcasts(
+      category === "All"
+        ? podcasts
+        : podcasts.filter((podcast) => podcast.genres.includes(category))
+    );
+  };
+
   return (
     <div>
-      {podcasts.map((podcast) => (
+      <div>
+        <Button
+          variant="outlined"
+          id="filter-button"
+          aria-controls="filter-menu"
+          aria-haspopup="true"
+          onClick={(event) => setAnchorEl(event.currentTarget)}
+        >
+          Filter by Category
+        </Button>
+        <Menu
+          key="menu"
+          id="filter-menu"
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={() => setAnchorEl(null)}
+        >
+          {categories.map((category) => (
+            <MenuItem
+              key={category + "_filter"}
+              onClick={() => handleFilterChange(category)}
+            >
+              {category}
+            </MenuItem>
+          ))}
+        </Menu>
+      </div>
+      {filteredPodcasts.map((podcast) => (
         <div key={podcast._id} className="flex items-center mb-4">
           <audio controls src={podcast.audio_url}></audio>
           <button

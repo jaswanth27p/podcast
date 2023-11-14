@@ -1,8 +1,9 @@
 const Podcasts = require("../models/podcasts");
-
+const Category = require("../models/categories")
 // Controller function to create a new podcast
 const createPodcast = async (req, res) => {
-  const { title, description, audio_url } = req.body;
+  const { title, description, audio_url, image_url, genres, duration } =
+    req.body;
 
   // Extract user information from JWT (assuming you are using a middleware to set user info in req.user)
   const { id: user_id, username: author } = req.user;
@@ -14,16 +15,30 @@ const createPodcast = async (req, res) => {
       description,
       author,
       audio_url,
+      image_url,
+      genres,
+      duration,
       user_id,
     });
+
     // Save the new podcast to the database
     await newPodcast.save();
+
+    // Update categories with the new podcastId
+    for (const genre of genres) {
+      const category = await Category.findOne({ name: genre });
+      if (category) {
+        category.podcastIds.push(newPodcast._id);
+        await category.save();
+      }
+    }
     res.status(201).json({ message: "Podcast created successfully" });
   } catch (error) {
     console.error("Error creating podcast:", error);
     res.status(500).json({ message: "Failed to create podcast" });
   }
 };
+
 
 // Controller function to get a list of podcasts by user_id
 const getPodcastsByUser = async (req, res) => {
@@ -89,10 +104,22 @@ const deletePodcast = async (req, res) => {
 
   try {
     // Find the podcast by ID and remove it
-    const result = await Podcasts.findByIdAndRemove(podcastId);
+    const deletedPodcast = await Podcasts.findByIdAndRemove(podcastId);
 
-    if (!result) {
+    if (!deletedPodcast) {
       return res.status(404).json({ message: "Podcast not found" });
+    }
+
+    // Update categories by removing the deleted podcast ID
+    for (const genre of deletedPodcast.genres) {
+      const category = await Category.findOne({ name: genre });
+
+      if (category) {
+        category.podcastIds = category.podcastIds.filter(
+          (podcastId) => podcastId.toString() !== deletedPodcast._id.toString()
+        );
+        await category.save();
+      }
     }
 
     res.status(200).json({ message: "Podcast deleted successfully" });
@@ -101,6 +128,7 @@ const deletePodcast = async (req, res) => {
     res.status(500).json({ message: "Failed to delete podcast" });
   }
 };
+
 
 module.exports = {
   createPodcast,

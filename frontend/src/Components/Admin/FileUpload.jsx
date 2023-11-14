@@ -1,46 +1,99 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { storage } from "../../firebase.js";
 import { v4 as uuidv4 } from "uuid";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  getMetadata,
+  deleteObject,
+} from "firebase/storage";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
 function FileUpload({ setPopupVisible, isPopupVisible }) {
   const [podCastName, setpodCastName] = useState("");
-  const [Discription, setDiscription] = useState("");
-  const [audio, setAudio] = useState("");
+  const [description, setDescription] = useState("");
+  const [audio, setAudio] = useState(null);
+  const [image, setImage] = useState(null);
+  const [genres, setGenres] = useState([]);
+  const [selectedGenres, setSelectedGenres] = useState([]);
   const [error, setError] = useState("");
-  const [Loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchGenres = async () => {
+      try {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const response = await fetch(`${backendUrl}/categories`, {
+          method: "GET",
+          credentials: "include",
+        });
+        const data = await response.json();
+        setGenres(data);
+      } catch (error) {
+        console.error("Error fetching genres:", error);
+      }
+    };
+
+    fetchGenres();
+  }, []);
 
   const onClose = () => {
     setPopupVisible(false);
     setpodCastName("");
-    setDiscription("");
-    setAudio("");
+    setDescription("");
+    setAudio(null);
+    setImage(null);
     setError("");
+    setSelectedGenres([]); // Clear selected genres
   };
 
   const handleUpload = async () => {
-    // Validate inputs
-    if (!podCastName || !Discription|| !audio) {
-      setError("Please fill in all fields.");
-      return;
-    }
-
-    // Your upload logic here
     try {
+      // Validate inputs
+      if (
+        !podCastName ||
+        !description ||
+        !audio ||
+        !image ||
+        selectedGenres.length === 0
+      ) {
+        setError("Please fill in all fields.");
+        return;
+      }
+
       setLoading(true);
-      const storageRef = ref(storage, `podcasts/${uuidv4()}`);
-      const snapshot = await uploadBytes(storageRef, audio);
-      const backendUrl = import.meta.env.VITE_BACKEND_URL;
-      // Get the download URL
-      const audioUrl = await getDownloadURL(snapshot.ref);
+
+      // Upload audio
+      const audioStorageRef = ref(storage, `podcasts/audio/${uuidv4()}`);
+      const audioSnapshot = await uploadBytes(audioStorageRef, audio);
+      const audioUrl = await getDownloadURL(audioSnapshot.ref);
+
+      // Upload image
+      const imageStorageRef = ref(storage, `podcasts/images/${uuidv4()}`);
+      const imageSnapshot = await uploadBytes(imageStorageRef, image);
+      const imageUrl = await getDownloadURL(imageSnapshot.ref);
+
+      // Measure audio duration
+      // Measure audio duration using a temporary audio element
+      const audioElement = new Audio();
+      audioElement.src = URL.createObjectURL(audio);
+
+      // Wait for the audio metadata to load
+      await new Promise((resolve) => {
+        audioElement.onloadedmetadata = resolve;
+      });
+
+      // Get the audio duration
+      const audioDuration = audioElement.duration;
 
       // Send data to backend
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
       const response = await fetch(`${backendUrl}/podcasts`, {
         method: "POST",
         credentials: "include",
@@ -49,8 +102,11 @@ function FileUpload({ setPopupVisible, isPopupVisible }) {
         },
         body: JSON.stringify({
           title: podCastName,
-          description: Discription,
+          description,
           audio_url: audioUrl,
+          image_url: imageUrl,
+          genres: selectedGenres, // Send selected genres
+          duration: audioDuration,
         }),
       });
 
@@ -62,12 +118,26 @@ function FileUpload({ setPopupVisible, isPopupVisible }) {
         // Handle error from backend
         const data = await response.json();
         setError(data.message || "An error occurred during upload.");
+        await deleteObject(audioStorageRef);
+        await deleteObject(imageStorageRef);
       }
-      setLoading(false);
     } catch (err) {
       console.error("Upload error:", err);
       setError("An error occurred during upload. Please try again.");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleGenreChange = (genreId) => {
+    // Toggle the selection of the genre
+    setSelectedGenres((prevGenres) => {
+      if (prevGenres.includes(genreId)) {
+        return prevGenres.filter((id) => id !== genreId);
+      } else {
+        return [...prevGenres, genreId];
+      }
+    });
   };
 
   return (
@@ -75,7 +145,7 @@ function FileUpload({ setPopupVisible, isPopupVisible }) {
       <div>
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={Loading}
+          open={loading}
         >
           <CircularProgress color="inherit" />
         </Backdrop>
@@ -105,13 +175,13 @@ function FileUpload({ setPopupVisible, isPopupVisible }) {
           </div>
           <div>
             <label className="block text-gray-700 text-sm font-semibold">
-              Discription
+              Description
             </label>
             <input
               type="text"
               className="w-full p-2 border rounded-lg"
-              value={Discription}
-              onChange={(e) => setDiscription(e.target.value)}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               required
             />
           </div>
@@ -126,6 +196,37 @@ function FileUpload({ setPopupVisible, isPopupVisible }) {
               onChange={(e) => setAudio(e.target.files[0])}
               required
             />
+          </div>
+          <div>
+            <label className="block text-gray-700 text-sm font-semibold">
+              Image
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              className="w-full p-2 border rounded-lg"
+              onChange={(e) => setImage(e.target.files[0])}
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700 text-sm font-semibold">
+              Genres
+            </label>
+            <div className="flex flex-wrap">
+              {genres.map((genre) => (
+                <div key={genre._id} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id={genre.name}
+                    checked={selectedGenres.includes(genre.name)}
+                    onChange={() => handleGenreChange(genre.name)}
+                    className="mr-2"
+                  />
+                  <label htmlFor={genre._id}>{genre.name}</label>
+                </div>
+              ))}
+            </div>
           </div>
           <div className="flex justify-around mt-4">
             <button
