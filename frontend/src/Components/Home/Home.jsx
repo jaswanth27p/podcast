@@ -1,4 +1,3 @@
-
 /* eslint-disable no-unused-vars */
 import Banner from "./Banner";
 import Contact from "./Contact";

@@ -74,12 +74,12 @@ const Login = ({ setPopupVisible, type, isPopupVisible }) => {
             handleToggleForm();
           } else {
             setError(res.data.message);
-          } 
+          }
         }
         setLoading(false);
       })
       .catch((res, err) => {
-        setLoading(false)
+        setLoading(false);
         setError(res.response.data.message);
       });
   };
@@ -99,7 +99,7 @@ const Login = ({ setPopupVisible, type, isPopupVisible }) => {
           isPopupVisible ? "" : "hidden"
         }`}
       >
-        <div className="bg-white p-4 rounded-lg w-1/3">
+        <div className="bg-white p-4 rounded-lg sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5">
           <h2 className="text-2xl font-bold mb-4 text-center">
             {isLogin ? type + " Login" : type + " Register"}
           </h2>
@@ -146,7 +146,7 @@ const Login = ({ setPopupVisible, type, isPopupVisible }) => {
             </div>
             <button
               type="submit"
-              className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg mb-4"
+              className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg mb-4 hover:bg-gray-500"
             >
               {isLogin ? "Login" : "Register"}
             </button>
@@ -154,13 +154,13 @@ const Login = ({ setPopupVisible, type, isPopupVisible }) => {
           <div className="flex justify-around">
             <button
               onClick={handleToggleForm}
-              className="bg-gray-300 hover-bg-gray-400 rounded p-2 mr-2"
+              className="bg-gray-300 hover-bg-gray-400 rounded-lg py-2 px-4 mr-2 hover:bg-green-500 hover:text-white"
             >
               {isLogin ? "Register" : "Login"}
             </button>
             <button
               onClick={onClose}
-              className="bg-gray-300 hover-bg-gray-400 rounded p-2"
+              className="bg-gray-300 hover-bg-gray-400 rounded-lg py-2 px-4 hover:bg-red-500 hover:text-white"
             >
               Close
             </button>

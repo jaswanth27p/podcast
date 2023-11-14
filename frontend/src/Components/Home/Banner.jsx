@@ -10,7 +10,7 @@ const Banner = ({onOpen}) => {
             </h1>
             <button
               onClick={() => onOpen("Admin")}
-              className="border rounded-lg p-3 mt-3 mb-2"
+              className="border rounded-lg p-3 mt-3 mb-2 bg-blue-500 text-white hover:bg-gray-500"
             >
               Become a Creator
             </button>

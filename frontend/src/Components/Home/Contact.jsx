@@ -24,7 +24,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="container mx-auto py-10 px-10 m-5">
+    <div className="container mx-auto py-10 px-10 m-5 bg-blue-100">
       <h2 className="text-2xl font-bold mb-5 text-center">Contact Us</h2>
       <form onSubmit={handleSubmit} className="max-w-lg mx-auto">
         <div className="mb-4">
@@ -80,7 +80,7 @@ const Contact = () => {
         </div>
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
         >
           Submit
         </button>
