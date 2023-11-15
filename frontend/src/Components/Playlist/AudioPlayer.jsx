@@ -3,24 +3,26 @@
 import { useState, useRef, useEffect } from "react";
 import "./AudioPlayer.css";
 
-const AudioPlayer = ({ imgSrc, podcastUrl, playlists }) => {
-  const audioFiles = playlists.map((playlist) => playlist.podcastUrl);
-
+const AudioPlayer = ({
+  imgSrc,
+  podcastUrl,
+  duration,
+  handleNext,
+  handlePrev,
+}) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
   const [pausedTime, setPausedTime] = useState(null);
-  const [trackIndex, setTrackIndex] = useState(0);
-  const [trackImageUrl, setTrackImageUrl] = useState(imgSrc);
 
   const audioRef = useRef(null);
 
   const handlePlay = () => {
-    if (pausedTime == null) {
+    console.log(pausedTime)
+    if (pausedTime ==null) {
       audioRef.current.play();
     } else {
       audioRef.current.currentTime = pausedTime;
-      setPausedTime(null);
+      setPausedTime(null);  
     }
     setIsPlaying(true);
   };
@@ -34,11 +36,7 @@ const AudioPlayer = ({ imgSrc, podcastUrl, playlists }) => {
   const handleSeek = (e) => {
     audioRef.current.currentTime = e.target.value;
     setCurrentTime(e.target.value);
-  };
-
-  const handleTimeUpdate = () => {
-    setCurrentTime(audioRef.current.currentTime);
-    setDuration(audioRef.current.duration);
+    setPausedTime(e.target.value);
   };
 
   const handlePlayPause = () => {
@@ -49,18 +47,6 @@ const AudioPlayer = ({ imgSrc, podcastUrl, playlists }) => {
     }
   };
 
-  const handleNext = () => {
-    setPausedTime(null); // Reset paused time
-    setTrackIndex((prevIndex) => (prevIndex + 1) % audioFiles.length);
-  };
-
-  const handlePrev = () => {
-    setPausedTime(null); // Reset paused time
-    setTrackIndex((prevIndex) =>
-      prevIndex === 0 ? audioFiles.length - 1 : prevIndex - 1
-    );
-  };
-
   function formatDuration(durationSeconds) {
     const minutes = Math.floor(durationSeconds / 60);
     const seconds = Math.floor(durationSeconds % 60);
@@ -68,29 +54,18 @@ const AudioPlayer = ({ imgSrc, podcastUrl, playlists }) => {
     return `${minutes}:${formattedSeconds}`;
   }
 
-useEffect(() => {
-  const handleAudioLoad = () => {
-    // This event is triggered when the metadata has been loaded
-    if (isPlaying) {
-      audioRef.current.play();
-    }
-  };
-
-  audioRef.current.addEventListener("loadedmetadata", handleAudioLoad);
-
-  // Set the track image URL and audio source
-  if (trackImageUrl === null) {
-    setTrackImageUrl(playlists[trackIndex]?.imageUrl);
-    audioRef.current.src = audioFiles[trackIndex];
-  } else {
-    setTrackImageUrl(imgSrc);
+  useEffect(() => {
+    const handleAudioLoad = () => {
+      if (isPlaying) {
+        audioRef.current.play();
+      }
+    };
+    audioRef.current.addEventListener("loadedmetadata", handleAudioLoad);
     audioRef.current.src = podcastUrl;
-  }
-
-  return () => {
-    audioRef.current.removeEventListener("loadedmetadata", handleAudioLoad);
-  };
-}, [audioFiles, imgSrc, isPlaying, playlists, podcastUrl, trackImageUrl, trackIndex]);
+    return () => {
+      audioRef.current.removeEventListener("loadedmetadata", handleAudioLoad);
+    };
+  }, [podcastUrl, isPlaying]);
 
   useEffect(() => {
     if (isPlaying) {
@@ -100,14 +75,24 @@ useEffect(() => {
     }
   }, [isPlaying]);
 
+  useEffect(() => {
+    const updateCurrentTime = () => {
+      if (isPlaying) {
+        setCurrentTime(audioRef.current.currentTime);
+      }
+    };
+    const intervalId = setInterval(updateCurrentTime, 1000);
+    return () => clearInterval(intervalId);
+  }, [isPlaying]);
+
   return (
     <div className="player-card">
-      <img src={trackImageUrl} alt="Cover Image" className="image" />
+      <img src={imgSrc} alt="Cover Image" className="image" />
 
       <input
         type="range"
         min="0"
-        max={duration || 0} // Ensure a valid number for max
+        max={duration || 0}
         value={currentTime}
         onChange={handleSeek}
         className="range"

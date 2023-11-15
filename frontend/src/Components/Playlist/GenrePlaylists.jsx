@@ -1,10 +1,9 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import {  useParams } from "react-router-dom";
 import AudioPlayer from "./AudioPlayer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faEllipsisH } from "@fortawesome/free-solid-svg-icons";
-import PlaylistModal from "./PlaylistModal";
 import {
   useFetchCategory,
   useCategoriesSelector,
@@ -16,62 +15,35 @@ const formatDuration = (duration) => {
   return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 };
 
-const getAudioDuration = async (podcastUrl) => {
-  return new Promise((resolve) => {
-    const audio = new Audio(podcastUrl);
-    audio.addEventListener("loadedmetadata", () => {
-      resolve(audio.duration);
-    });
-  });
-};
-
 const GenrePlaylists = () => {
   const { genre } = useParams();
   const dispatchFetchCategory = useFetchCategory(genre);
   const categories = useCategoriesSelector();
   const [currentPlaylistIndex, setCurrentPlaylistIndex] = useState(0);
-  const [showDropdown, setShowDropdown] = useState(null);
-  const [showPlaylist, setShowPlaylist] = useState(false);
 
   useEffect(() => {
     // Fetch the category data when the genre changes
     dispatchFetchCategory();
-  }, [genre, dispatchFetchCategory]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [  ]);
 
-  const playlists = useMemo(
-    () => categories[genre]?.data || [],
-    [categories, genre]
-  );
-
+  const playlists = categories[genre]?.data || [];
   const handleLoveClick = (index) => {
     // Dispatch action to update loved status in the Redux store
     // Example: dispatch(updateLovedStatus(playlists[index]._id));
   };
+  const handleNext = () => {
+    setCurrentPlaylistIndex((prevIndex) => (prevIndex + 1) % playlists.length);
+  };
 
+  const handlePrev = () => {
+    setCurrentPlaylistIndex((prevIndex) =>
+      prevIndex === 0 ? playlists.length - 1 : prevIndex - 1
+    );
+  };
   const handlePlaylistClick = (index) => {
     setCurrentPlaylistIndex(index);
   };
-
-  // Fetch audio duration for each playlist
-  useEffect(() => {
-    const fetchAudioDurations = async () => {
-      const updatedPlaylists = await Promise.all(
-        playlists.map(async (playlist) => {
-          // Check if the duration is already available
-          if (!playlist.duration) {
-            const duration = await getAudioDuration(playlist.audio_url);
-            return { ...playlist, duration };
-          }
-          return playlist;
-        })
-      );
-
-      // Dispatch action to update the Redux store with durations
-      // Example: dispatch(updatePlaylistDurations(updatedPlaylists));
-    };
-
-    fetchAudioDurations();
-  }, [genre, playlists]);
 
   return (
     <div className="container mx-auto p-3">
@@ -110,37 +82,6 @@ const GenrePlaylists = () => {
                 <span className="mx-2 text-gray-500 text-xs">
                   {formatDuration(playlist.duration)}
                 </span>
-
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowDropdown(showDropdown === index ? null : index);
-                  }}
-                  className={`ml-2 text-gray-500 focus:outline-none ${
-                    showDropdown === index ? "text-blue-500" : "text-gray-500"
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faEllipsisH} className="h-4 w-4" />
-                </button>
-
-                {showDropdown === index && (
-                  <div className="absolute top-full left-0 mt-1 z-20">
-                    <div
-                      id="dropdownDotsHorizontal"
-                      className="z-20 bg-white rounded-lg shadow w-32 text-xs"
-                    >
-                      <button
-                        className="block py-2 hover:bg-gray-100 text-center w-32 rounded-lg bg-blue-500 text-white hover:text-black"
-                        onClick={() => setShowPlaylist(!showPlaylist)}
-                      >
-                        Playlist +=
-                      </button>
-                      {showPlaylist && (
-                        <PlaylistModal onClose={() => setShowPlaylist(false)} />
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           ))}
@@ -150,12 +91,14 @@ const GenrePlaylists = () => {
           <AudioPlayer
             imgSrc={playlists[currentPlaylistIndex]?.image_url}
             podcastUrl={playlists[currentPlaylistIndex]?.audio_url}
+            duration={playlists[currentPlaylistIndex]?.duration}
             playlists={playlists}
+            handleNext={handleNext}
+            handlePrev={handlePrev}
           />
         </div>
       </div>
     </div>
   );
 };
-
 export default GenrePlaylists;

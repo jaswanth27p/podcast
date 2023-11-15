@@ -7,19 +7,14 @@ import {
 
 const Popular = () => {
   const { trending: trendingData } = useCategoriesSelector();
-  // Check if latestData is an array before using map
-  if (!Array.isArray(trendingData.data)) {
-    console.error("latestData is not an array:", trendingData);
-    return null; // or render an appropriate message
-  }
-  const reversedData = [...trendingData.data].reverse();
+   
 
   return (
     <div className="container mx-auto p-4 ">
       <h2 className=" text-xl p-2 font-semibold">Trending</h2>
       <div className="overflow-x-auto">
         <div className="flex gap-4 min-w-max ">
-          {reversedData.map((podcast, index) => (
+          {trendingData.data.map((podcast, index) => (
             <PodcastCard
               key={index}
               title={podcast.title}
