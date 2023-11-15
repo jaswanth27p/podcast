@@ -5,6 +5,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import MenuItem from "@mui/material/MenuItem";
 import { storage } from "../../firebase.js";
 import { ref, deleteObject } from "firebase/storage";
+import PodcastItem from "./PodcastItem";
 
 function AudioItem() {
   const [podcasts, setPodcasts] = useState([]);
@@ -90,7 +91,7 @@ function AudioItem() {
           aria-controls="filter-menu"
           aria-haspopup="true"
           onClick={(event) => setAnchorEl(event.currentTarget)}
-          className="ml-3 mb-2 w-1/3"
+          className="mb-2 w-full md:w-1/3 ml-2"
         >
           Filter by Category
         </Button>
@@ -119,17 +120,17 @@ function AudioItem() {
           ))}
         </Menu>
       </div>
-      {filteredPodcasts.map((podcast) => (
-        <div key={podcast._id} className="flex items-center mb-2">
-          <audio controls src={podcast.audio_url}></audio>
-          <button
-            onClick={() => handleDelete(podcast._id, podcast.audio_url)}
-            className="block text-white bg-gray-600 hover:bg-red-500 rounded-lg text-sm px-5 py-2 focus:outline-none m-2"
-            type="button"
-          >
-            Delete
-          </button>
-        </div>
+      {filteredPodcasts.map((podcast, index) => (
+        <PodcastItem
+          key={podcast._id}
+          slNo={index + 1}
+          img={podcast.image_url}
+          title={podcast.title}
+          description={podcast.description}
+          audioUrl={podcast.audio_url}
+          podcastId={podcast._id}
+          handleDelete={handleDelete}
+        />
       ))}
     </div>
   );

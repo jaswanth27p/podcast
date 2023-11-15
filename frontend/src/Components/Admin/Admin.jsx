@@ -6,9 +6,6 @@ import FileUpload from "./FileUpload";
 import AudioItem from "./AudioItem";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { storage } from "../../firebase.js";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { v4 } from "uuid";
 
 function Creator() {
   const navigate = useNavigate();
@@ -39,29 +36,18 @@ function Creator() {
     return null; // Return early if userData is not available
   }
 
-  // const handleClick = () => {
-  //   if (audio !== null) {
-  //     const audioRef = ref(storage, `audio/${v4()}`);
-  //     uploadBytes(audioRef, audio).then((value) => {
-  //       console.log(value);
-  //       getDownloadURL(value.ref).then((url) => {
-  //         setAudioUrls((data) => [...data, url]);
-  //       });
-  //     });
-  //   }
-  // };
   return (
-    <div>
+    <div className="mobile-container">
       <Navbar user={creatorData} />
-      <div>
-        <h2>Welcome, {creatorData.username}!</h2>
-      </div>
 
-      <div className="flex">
-        <Uplod />
-        <FileUpload />
+      <div className="mx-4">
+        <h2 className="mx-3">Welcome, {creatorData.username}!</h2>
+        <div className="flex">
+          <Uplod />
+          <FileUpload />
+        </div>
+        <AudioItem />
       </div>
-      <AudioItem />
     </div>
   );
 }

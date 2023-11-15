@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import AudioPlayer from "./Audio/AudioPlayer";
+import AudioPlayer from "./AudioPlayer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faEllipsisH } from "@fortawesome/free-solid-svg-icons";
 import Audio1 from "./Audio/Audio1.mp3";
 import Audio2 from "./Audio/Audio2.mp3";
 import Audio3 from "./Audio/Audio3.mp3";
-import PlaylistModal from "./Audio/PlaylistModal";
+import PlaylistModal from "./PlaylistModal";
 
 const mockPlaylists = [
   {
