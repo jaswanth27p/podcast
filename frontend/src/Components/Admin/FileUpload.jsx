@@ -63,7 +63,7 @@ function FileUpload({ setPopupVisible, isPopupVisible }) {
         !image ||
         selectedGenres.length === 0
       ) {
-        setError("Please fill in all fields.");
+        setError("Please fill all fields.");
         return;
       }
 
@@ -156,9 +156,9 @@ function FileUpload({ setPopupVisible, isPopupVisible }) {
           isPopupVisible ? "" : "hidden"
         }`}
       >
-        <div className="bg-white p-4 rounded-lg w-1/3">
+        <div className="bg-white p-4 rounded-lg w-full sm:w-1/2 md:w-1/3 lg:w-1/2 xl:w-1/2">
           <h2 className="text-2xl font-bold mb-4 text-center">
-            Fill the below details to upload
+            Fill the below details to Upload
           </h2>
           {error && <p className="text-red-500 text-center text-sm">{error}</p>}
           <div>
@@ -213,7 +213,7 @@ function FileUpload({ setPopupVisible, isPopupVisible }) {
             <label className="block text-gray-700 text-sm font-semibold">
               Genres
             </label>
-            <div className="flex flex-wrap">
+            <div className="grid grid-cols-4">
               {genres.map((genre) => (
                 <div key={genre._id} className="flex items-center">
                   <input
@@ -221,7 +221,7 @@ function FileUpload({ setPopupVisible, isPopupVisible }) {
                     id={genre.name}
                     checked={selectedGenres.includes(genre.name)}
                     onChange={() => handleGenreChange(genre.name)}
-                    className="mr-2"
+                    className="mr-0.5"
                   />
                   <label htmlFor={genre._id}>{genre.name}</label>
                 </div>
@@ -231,13 +231,13 @@ function FileUpload({ setPopupVisible, isPopupVisible }) {
           <div className="flex justify-around mt-4">
             <button
               onClick={handleUpload}
-              className="bg-green-500 hover-bg-gray-400 rounded p-2 text-white w-1/2"
+              className="bg-green-500 hover:bg-green-600 rounded p-2 text-white w-1/2 mr-3"
             >
               Upload
             </button>
             <button
               onClick={onClose}
-              className="bg-gray-300 hover-bg-gray-400 rounded p-2 w-1/2"
+              className="bg-gray-300 hover:bg-red-400 rounded p-2 w-1/2 ml-3 hover:text-white"
             >
               Close
             </button>

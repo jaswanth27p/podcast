@@ -33,7 +33,7 @@ function Creator() {
       .catch((error) => {
         navigate("/");
       });
-  }, [navigate ,backendUrl]);
+  }, [navigate, backendUrl]);
 
   if (!creatorData) {
     return null; // Return early if userData is not available
@@ -55,12 +55,11 @@ function Creator() {
       <Navbar user={creatorData} />
       <div>
         <h2>Welcome, {creatorData.username}!</h2>
-        <p>Email: {creatorData.email}</p>
-        <p>Role: {creatorData.role}</p>
       </div>
+
       <div className="flex">
-      <Uplod />
-      <FileUpload />
+        <Uplod />
+        <FileUpload />
       </div>
       <AudioItem />
     </div>

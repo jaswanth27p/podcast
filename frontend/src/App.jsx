@@ -2,7 +2,7 @@
 import Admin from "./Components/Admin/Admin";
 import Home from "./Components/Home/Home";
 import User from "./Components/User/User";
-import GenrePlaylists from "./Components/User/genereplaylist";
+import GenrePlaylists from "./Components/Playlist/GenrePlaylists";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 export default function App() {
