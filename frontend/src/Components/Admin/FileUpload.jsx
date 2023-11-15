@@ -109,6 +109,7 @@ function FileUpload({ setPopupVisible, isPopupVisible }) {
           duration: audioDuration,
         }),
       });
+      console.log(selectedGenres)
 
       if (response.ok) {
         onClose();

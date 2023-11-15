@@ -7,7 +7,7 @@ const createPodcast = async (req, res) => {
 
   // Extract user information from JWT (assuming you are using a middleware to set user info in req.user)
   const { id: user_id, username: author } = req.user;
-
+  console.log(genres)
   try {
     // Create a new podcast document
     const newPodcast = new Podcasts({

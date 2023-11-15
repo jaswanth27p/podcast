@@ -1,5 +1,5 @@
 const Category = require("../models/categories");
-
+const Podcast = require("../models/podcasts");
 // Controller function to get a list of categories
 const getCategories = async (req, res) => {
   try {
@@ -14,17 +14,22 @@ const getCategories = async (req, res) => {
 
 // Controller function to get a single category by ID
 const getCategory= async (req, res) => {
-  const categoryId = req.params.id;
+  const categoryName = req.params.name;
 
   try {
-    // Retrieve the category by its ID
-    const category = await Category.findById(categoryId);
+    // Retrieve the category by its name
+    const category = await Category.findOne({ name: categoryName });
 
     if (!category) {
       return res.status(404).json({ message: "Category not found" });
     }
+    // Extract podcast IDs from the category
+    const podcastIds = category.podcastIds || [];
 
-    res.status(200).json(category);
+    // Fetch podcasts using the array of podcast IDs
+    const podcasts = await Podcast.find({ _id: { $in: podcastIds } });
+
+    res.status(200).json(podcasts);
   } catch (error) {
     console.error("Error fetching category:", error);
     res.status(500).json({ message: "Failed to fetch category" });
@@ -51,11 +56,11 @@ const createCategory = async (req, res) => {
 
 // Controller function to update an existing category
 const updateCategory = async (req, res) => {
-  const categoryId = req.params.id;
+  const categoryName = req.params.name;
   const { name, podcastIds } = req.body;
   try {
-    // Find the category by ID
-    const category = await Category.findById(categoryId);
+    // Find the category by name
+    const category = await Category.findOne({ name: categoryName });
 
     if (!category) {
       return res.status(404).json({ message: "Category not found" });

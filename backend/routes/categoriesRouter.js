@@ -14,14 +14,12 @@ categoryRouter.get("/", getCategories);
 // Route to create a new category
 categoryRouter.post("/", createCategory);
 
-// Route to update an existing category by ID
 categoryRouter
-  .route("/:id")
-  .put(updateCategory)
+  .route("/id/:id")
   .delete(deleteCategory)
-  .get(getCategory);
+  
 categoryRouter
-  .route("/name/:name")
+  .route("/:name")
   .put(updateCategory)
   .delete(deleteCategory)
   .get(getCategory);
