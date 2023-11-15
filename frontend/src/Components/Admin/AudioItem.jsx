@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
+import SearchIcon from "@mui/icons-material/Search";
 import MenuItem from "@mui/material/MenuItem";
 import { storage } from "../../firebase.js";
 import { ref, deleteObject } from "firebase/storage";
@@ -10,6 +11,7 @@ function AudioItem() {
   const [filteredPodcasts, setFilteredPodcasts] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [categories, setCategories] = useState(["All"]); // Include "All" in the initial categories
+  const [searchQuery, setSearchQuery] = useState(""); // Add this line for the search query state
 
   useEffect(() => {
     const fetchPodcasts = async () => {
@@ -71,6 +73,14 @@ function AudioItem() {
     );
   };
 
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    const filtered = podcasts.filter((podcast) =>
+      podcast.title.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredPodcasts(filtered);
+  };
+
   return (
     <div>
       <div>
@@ -80,9 +90,18 @@ function AudioItem() {
           aria-controls="filter-menu"
           aria-haspopup="true"
           onClick={(event) => setAnchorEl(event.currentTarget)}
+          className="ml-3 mb-2 w-1/3"
         >
           Filter by Category
         </Button>
+        <SearchIcon className="ml-5 mr-1"/>
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={(e) => handleSearch(e.target.value)} // Add this line for the onChange event
+          className="mb-2 border border-gray-500 rounded-lg p-1.5 w-1/3"
+        />
         <Menu
           key="menu"
           id="filter-menu"
@@ -101,11 +120,11 @@ function AudioItem() {
         </Menu>
       </div>
       {filteredPodcasts.map((podcast) => (
-        <div key={podcast._id} className="flex items-center mb-4">
+        <div key={podcast._id} className="flex items-center mb-2">
           <audio controls src={podcast.audio_url}></audio>
           <button
             onClick={() => handleDelete(podcast._id, podcast.audio_url)}
-            className="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 m-2"
+            className="block text-white bg-gray-600 hover:bg-red-500 rounded-lg text-sm px-5 py-2 focus:outline-none m-2"
             type="button"
           >
             Delete
