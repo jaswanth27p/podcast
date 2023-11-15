@@ -34,7 +34,11 @@ function FileUpload({ setPopupVisible, isPopupVisible }) {
           credentials: "include",
         });
         const data = await response.json();
-        setGenres(data);
+        // Filter out "Trending" and "Latest" genres
+        const filteredGenres = data.filter(
+          (genre) => genre.name !== "Trending" && genre.name !== "Latest"
+        );
+        setGenres(filteredGenres);
       } catch (error) {
         console.error("Error fetching genres:", error);
       }

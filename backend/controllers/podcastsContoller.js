@@ -32,6 +32,26 @@ const createPodcast = async (req, res) => {
         await category.save();
       }
     }
+
+    // Update the "latest" category
+    const latestCategory = await Category.findOne({ name: "Latest" });
+    if (latestCategory) {
+      // Add the new podcast's ID to the "latest" category
+      latestCategory.podcastIds.unshift(newPodcast._id);
+
+      // Limit the "latest" category to 5 podcasts
+      const maxPodcastsInLatest = 5;
+      if (latestCategory.podcastIds.length > maxPodcastsInLatest) {
+        // Remove the exceeding podcasts
+        latestCategory.podcastIds = latestCategory.podcastIds.slice(
+          0,
+          maxPodcastsInLatest
+        );
+      }
+      // Save the changes to the "latest" category
+      await latestCategory.save();
+    }
+
     res.status(201).json({ message: "Podcast created successfully" });
   } catch (error) {
     console.error("Error creating podcast:", error);

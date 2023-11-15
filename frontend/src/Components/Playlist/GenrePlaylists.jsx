@@ -1,37 +1,14 @@
-import { useEffect, useState } from "react";
+/* eslint-disable no-unused-vars */
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import AudioPlayer from "./AudioPlayer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faEllipsisH } from "@fortawesome/free-solid-svg-icons";
-import Audio1 from "./Audio/Audio1.mp3";
-import Audio2 from "./Audio/Audio2.mp3";
-import Audio3 from "./Audio/Audio3.mp3";
 import PlaylistModal from "./PlaylistModal";
-
-const mockPlaylists = [
-  {
-    name: "Playlist one",
-    description: "Description of Playlist one",
-    podcastUrl: Audio1,
-    imageUrl:
-      "https://preview.colorlib.com/theme/megapod/img/podcast/podcast-4.jpg",
-  },
-  {
-    name: "Playlist two",
-    description: "Description of Playlist two",
-    podcastUrl: Audio2,
-    imageUrl:
-      "https://preview.colorlib.com/theme/megapod/img/podcast/podcast-2.jpg",
-  },
-  {
-    name: "Playlist three",
-    description: "Description of Playlist three",
-    podcastUrl: Audio3,
-    imageUrl:
-      "https://i.pinimg.com/736x/24/e1/1e/24e11e8df73186b41088e48f8342e994.jpg",
-  },
-  // Add more mock playlists here
-];
+import {
+  useFetchCategory,
+  useCategoriesSelector,
+} from "../../redux/reducers/categories";
 
 const formatDuration = (duration) => {
   const minutes = Math.floor(duration / 60);
@@ -39,7 +16,6 @@ const formatDuration = (duration) => {
   return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 };
 
-// Function to get audio duration from the podcast URL
 const getAudioDuration = async (podcastUrl) => {
   return new Promise((resolve) => {
     const audio = new Audio(podcastUrl);
@@ -51,50 +27,51 @@ const getAudioDuration = async (podcastUrl) => {
 
 const GenrePlaylists = () => {
   const { genre } = useParams();
-  const [playlists, setPlaylists] = useState(mockPlaylists);
+  const dispatchFetchCategory = useFetchCategory(genre);
+  const categories = useCategoriesSelector();
   const [currentPlaylistIndex, setCurrentPlaylistIndex] = useState(0);
-  const [currentpodcastUrl, setcurrentPodcastUrl] = useState(0);
   const [showDropdown, setShowDropdown] = useState(null);
   const [showPlaylist, setShowPlaylist] = useState(false);
 
+  useEffect(() => {
+    // Fetch the category data when the genre changes
+    dispatchFetchCategory();
+  }, [genre, dispatchFetchCategory]);
+
+  const playlists = useMemo(
+    () => categories[genre]?.data || [],
+    [categories, genre]
+  );
+
   const handleLoveClick = (index) => {
-    const updatedPlaylists = [...playlists];
-    updatedPlaylists[index].loved = !updatedPlaylists[index].loved;
-    setPlaylists(updatedPlaylists);
+    // Dispatch action to update loved status in the Redux store
+    // Example: dispatch(updateLovedStatus(playlists[index]._id));
   };
 
   const handlePlaylistClick = (index) => {
     setCurrentPlaylistIndex(index);
-    setcurrentPodcastUrl(index);
   };
 
+  // Fetch audio duration for each playlist
   useEffect(() => {
-    // Simulate fetching playlists based on the selected genre
-    // Replace this with your actual API call to fetch playlists
-    setPlaylists(mockPlaylists);
-
-    // Fetch audio duration for each playlist
     const fetchAudioDurations = async () => {
       const updatedPlaylists = await Promise.all(
         playlists.map(async (playlist) => {
-          const duration = await getAudioDuration(playlist.podcastUrl);
-          return { ...playlist, duration };
+          // Check if the duration is already available
+          if (!playlist.duration) {
+            const duration = await getAudioDuration(playlist.audio_url);
+            return { ...playlist, duration };
+          }
+          return playlist;
         })
       );
-      setPlaylists(updatedPlaylists);
+
+      // Dispatch action to update the Redux store with durations
+      // Example: dispatch(updatePlaylistDurations(updatedPlaylists));
     };
 
     fetchAudioDurations();
-  }, [genre]);
-
-  // Get the audio URLs, image URLs, and list of playlists
-  const audioUrls = playlists.map((playlist) => playlist.podcastUrl);
-  const imageUrls = playlists.map((playlist) => playlist.imageUrl);
-  const playlistNames = playlists.map((playlist) => playlist.name);
-
-  console.log("Audio URLs:", audioUrls);
-  console.log("Image URLs:", imageUrls);
-  console.log("Playlist Names:", playlistNames);
+  }, [genre, playlists]);
 
   return (
     <div className="container mx-auto p-3">
@@ -111,7 +88,7 @@ const GenrePlaylists = () => {
                 <div className="">
                   <h6 className="font-semibold text-sm">
                     <span className="mr-2">{index + 1}</span>
-                    {playlist.name}
+                    {playlist.title}
                   </h6>
                 </div>
                 <p className="text-xs text-gray-600">{playlist.description}</p>
@@ -171,8 +148,8 @@ const GenrePlaylists = () => {
 
         <div className="w-1/3 mt-2 relative z-10">
           <AudioPlayer
-            imgSrc={playlists[currentPlaylistIndex]?.imageUrl}
-            podcastUrl={playlists[currentpodcastUrl]?.podcastUrl}
+            imgSrc={playlists[currentPlaylistIndex]?.image_url}
+            podcastUrl={playlists[currentPlaylistIndex]?.audio_url}
             playlists={playlists}
           />
         </div>

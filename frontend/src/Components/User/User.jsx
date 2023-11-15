@@ -8,11 +8,13 @@ import Genres from "./genres";
 import Popular from "./Popular";
 import Latest from "./Latest";
 import Fotter from "../Home/Fotter";
+import {useCategoriesSelector ,useFetchTrendingAndLatest} from "../../redux/reducers/categories";
 
 const User = () => {
   const navigate = useNavigate();
   const setUser = useSetUser();
   const user = useUserSelector();
+  const setTrendingAndLatest =useFetchTrendingAndLatest()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,6 +41,7 @@ const User = () => {
 
     // Run the fetchData function only once when the component mounts
     fetchData();
+    setTrendingAndLatest();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]); // Empty dependency array ensures that this effect runs only once
 

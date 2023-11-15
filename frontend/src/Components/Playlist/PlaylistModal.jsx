@@ -1,5 +1,5 @@
+/* eslint-disable react/prop-types */
 // PlaylistModal.js
-import React from "react";
 
 const PlaylistModal = ({ onClose }) => {
   return (

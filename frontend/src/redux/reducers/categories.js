@@ -5,67 +5,103 @@ import { useDispatch, useSelector } from "react-redux";
 const categoriesSlice = createSlice({
   name: "categories",
   initialState: {
-    trending: [],
-    latest: [],
+    trending: {
+      data: [],
+      isFetched: false,
+      index: 0,
+    },
+    latest: {
+      data: [],
+      isFetched: false,
+      index: 0,
+    },
     // Add other category initial states as needed
   },
   reducers: {
     setTrending: (state, action) => {
-      state.trending = action.payload;
+      state.trending.data = action.payload;
+      state.trending.isFetched = true;
     },
     setLatest: (state, action) => {
-      state.latest = action.payload;
+      state.latest.data = action.payload;
+      state.latest.isFetched = true;
     },
     addCategory: (state, action) => {
       // Assuming action.payload is an object representing a new category
-      state[action.payload.key] = action.payload.value;
+      const { key, value } = action.payload;
+      state[key] = { data: value, isFetched: true };
+    },
+    updateIndex: (state, action) => {
+      const { categoryKey, newIndex } = action.payload;
+      if (state[categoryKey]) {
+        state[categoryKey].index = newIndex;
+      }
     },
     // Add other category reducers as needed
   },
 });
 
-export const { setTrending, setLatest, addCategory } = categoriesSlice.actions;
+export const { setTrending, setLatest, addCategory, updateIndex } =
+  categoriesSlice.actions;
 
 // Selectors
 export const selectCategories = (state) => state.categories;
 
 // Thunk actions
-export const fetchTrendingAndLatestAsync = () => async (dispatch) => {
+export const fetchTrendingAndLatestAsync = () => async (dispatch, getState) => {
   try {
-    // Simulating an API call for trending and latest data
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
-    const trending = await fetch(`${backendUrl}/categories/trending`, {
-      method: "GET",
-      credentials: "include",
-    });
-    const latest = await fetch(`${backendUrl}/categories/latest`, {
-      method: "GET",
-      credentials: "include",
-    });
-    const Tdata = await trending.json();
-    const Ldata = await latest.json();
-    dispatch(setTrending( Tdata));
-    dispatch(setLatest(Ldata));
+    // Check if the data is already fetched
+    const { trending, latest } = getState().categories;
+    if (!trending.isFetched) {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const trendingResponse = await fetch(
+        `${backendUrl}/categories/Trending`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      const trendingData = await trendingResponse.json();
+      dispatch(setTrending(trendingData));
+    }
+
+    if (!latest.isFetched) {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const latestResponse = await fetch(`${backendUrl}/categories/Latest`, {
+        method: "GET",
+        credentials: "include",
+      });
+      const latestData = await latestResponse.json();
+      dispatch(setLatest(latestData));
+    }
   } catch (error) {
     console.error("Error fetching trending and latest data:", error);
   }
 };
 
-export const fetchCategoryAsync = (categoryKey) => async (dispatch) => {
-  try {
-    // Simulating an API call for a specific category
-    const backendUrl = import.meta.env.VITE_BACKEND_URL; 
-    const response = await fetch(`${backendUrl}/categories/${categoryKey}`, {
-      method: "GET",
-      credentials: "include",
-    });
-    const categoryData = await response.json();
-
-    dispatch(addCategory({ key: categoryKey, value: categoryData }));
-  } catch (error) {
-    console.error(`Error fetching ${categoryKey} category data:`, error);
-  }
-};
+export const fetchCategoryAsync =
+  (categoryKey) => async (dispatch, getState) => {
+    try {
+      // Check if the data is already fetched
+      const category = getState().categories[categoryKey];
+      if (!category || !category.isFetched) {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const response = await fetch(
+          `${backendUrl}/categories/${categoryKey}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+        const categoryData = await response.json();
+        dispatch(
+          addCategory({ key: categoryKey, value: categoryData, index: 0 })
+        );
+      }
+    } catch (error) {
+      console.error(`Error fetching ${categoryKey} category data:`, error);
+    }
+  };
 
 // Action creators
 export const useFetchTrendingAndLatest = () => {
@@ -76,6 +112,11 @@ export const useFetchTrendingAndLatest = () => {
 export const useFetchCategory = (categoryKey) => {
   const dispatch = useDispatch();
   return () => dispatch(fetchCategoryAsync(categoryKey));
+};
+
+export const useUpdateIndex = (categoryKey ,newIndex) => {
+  const dispatch = useDispatch();
+  dispatch(updateIndex({ categoryKey, newIndex}));
 };
 
 export const useCategoriesSelector = () => useSelector(selectCategories);
