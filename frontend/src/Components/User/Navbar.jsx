@@ -71,7 +71,7 @@ export default function Navbar({user}) {
       </Box>
 
       {logoutBtn && (
-        <div className="hidden md:hidden absolute top-15 right-5">
+        <div className="absolute top-15 right-5">
           <button onClick={handleLogout} className="bg-gray-600  rounded block px-5 py-2 text-sm text-gray-100 hover:bg-red-500">
             Logout
           </button>
