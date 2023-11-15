@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+/* eslint-disable react/prop-types */
+import  { useState, useRef, useEffect } from "react";
 import "./AudioPlayer.css";
 
 const AudioPlayer = ({ imgSrc, podcastUrl, playlists }) => {

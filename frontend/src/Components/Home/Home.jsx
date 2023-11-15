@@ -15,7 +15,6 @@ export default function App() {
     setLoginType(type);
   };
 
-
   return (
     <>
       <Navbar onOpen={openPopup} />
