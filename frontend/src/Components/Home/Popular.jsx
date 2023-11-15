@@ -42,7 +42,7 @@ const Popular = () => {
 }
 
 const Card = ({ imageSrc, name, description }) => (
-  <div className="bg-white rounded-lg shadow-xl max-w-sm m-auto transition-transform transition-colors transform hover:scale-105 hover:bg-blue-400 hover:text-white">
+  <div className="bg-white rounded-lg shadow-xl max-w-sm m-auto transition-transform   transform hover:scale-105 hover:bg-blue-400 hover:text-white">
     <div className="h-32 mt-4 ">
       <img src={imageSrc} alt="Image" className="mx-auto h-full rounded-full" />
     </div>
