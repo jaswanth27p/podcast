@@ -31,21 +31,30 @@ const AudioPlayer = ({
   };
 
   useEffect(() => {
-    // Function to update current time 
     const updateCurrentTime = () => {
       setCurrentTime(audioRef.current.currentTime);
     };
+
+    const handleEnded = () => {
+      setCurrentTime(0)
+      handleNext();
+    };
+
+    audioRef.current.addEventListener("ended", handleEnded);
     const intervalId = setInterval(updateCurrentTime, 1000);
 
-    return () => clearInterval(intervalId);
-  }, []);
+    return () => {
+      clearInterval(intervalId);
+      audioRef.current.removeEventListener("ended", handleEnded);
+    };
+  }, [handleNext]);
 
   useEffect(() => {
     if (isPlaying) {
-      audioRef.current.src = podcastUrl; // Set the new source
-      handlePlay(); // Play the new audio
+      audioRef.current.src = podcastUrl; 
+      handlePlay();  
     } else {
-      audioRef.current.src = podcastUrl; // Set the new source
+      audioRef.current.src = podcastUrl;  
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ podcastUrl]);
