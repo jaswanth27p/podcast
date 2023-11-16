@@ -12,78 +12,43 @@ const AudioPlayer = ({
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [pausedTime, setPausedTime] = useState(null);
 
   const audioRef = useRef(null);
 
   const handlePlay = () => {
-    console.log(pausedTime)
-    if (pausedTime ==null) {
-      audioRef.current.play();
-    } else {
-      audioRef.current.currentTime = pausedTime;
-      setPausedTime(null);  
-    }
+    audioRef.current.play();
     setIsPlaying(true);
   };
 
   const handlePause = () => {
-    setIsPlaying(false);
     audioRef.current.pause();
-    setPausedTime(audioRef.current.currentTime);
+    setIsPlaying(false);
   };
 
-  const handleSeek = (e) => {
-    audioRef.current.currentTime = e.target.value;
-    setCurrentTime(e.target.value);
-    setPausedTime(e.target.value);
+  const handleSeek = (newTime) => {
+    setCurrentTime(newTime);
+    audioRef.current.currentTime = newTime;
   };
 
-  const handlePlayPause = () => {
-    if (isPlaying) {
-      handlePause();
-    } else {
-      handlePlay();
-    }
-  };
-
-  function formatDuration(durationSeconds) {
-    const minutes = Math.floor(durationSeconds / 60);
-    const seconds = Math.floor(durationSeconds % 60);
-    const formattedSeconds = seconds.toString().padStart(2, "0");
-    return `${minutes}:${formattedSeconds}`;
-  }
-
   useEffect(() => {
-    const handleAudioLoad = () => {
-      if (isPlaying) {
-        audioRef.current.play();
-      }
-    };
-    audioRef.current.addEventListener("loadedmetadata", handleAudioLoad);
-    audioRef.current.src = podcastUrl;
-    return () => {
-      audioRef.current.removeEventListener("loadedmetadata", handleAudioLoad);
-    };
-  }, [podcastUrl, isPlaying]);
-
-  useEffect(() => {
-    if (isPlaying) {
-      audioRef.current.play();
-    } else {
-      audioRef.current.pause();
-    }
-  }, [isPlaying]);
-
-  useEffect(() => {
+    // Function to update current time 
     const updateCurrentTime = () => {
-      if (isPlaying) {
-        setCurrentTime(audioRef.current.currentTime);
-      }
+      setCurrentTime(audioRef.current.currentTime);
     };
     const intervalId = setInterval(updateCurrentTime, 1000);
+
     return () => clearInterval(intervalId);
-  }, [isPlaying]);
+  }, []);
+
+  useEffect(() => {
+    if (isPlaying) {
+      audioRef.current.src = podcastUrl; // Set the new source
+      handlePlay(); // Play the new audio
+    } else {
+      audioRef.current.src = podcastUrl; // Set the new source
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ podcastUrl]);
 
   return (
     <div className="player-card">
@@ -94,7 +59,7 @@ const AudioPlayer = ({
         min="0"
         max={duration || 0}
         value={currentTime}
-        onChange={handleSeek}
+        onChange={(e) => handleSeek(e.target.value)}
         className="range"
       />
 
@@ -106,17 +71,26 @@ const AudioPlayer = ({
       </div>
 
       <div className="controls">
-        <button onClick={handlePrev} className="control-button">
+        <button
+          onClick={handlePrev}
+          className="control-button"
+        >
           <span className="material-icons">skip_previous</span>
         </button>
 
-        <button onClick={handlePlayPause} className="playbutton">
+        <button
+          onClick={isPlaying ? handlePause : handlePlay}
+          className="playbutton"
+        >
           <span className="material-icons">
             {isPlaying ? "pause" : "play_arrow"}
           </span>
         </button>
 
-        <button onClick={handleNext} className="control-button">
+        <button
+          onClick={handleNext}
+          className="control-button"
+        >
           <span className="material-icons">skip_next</span>
         </button>
       </div>
@@ -125,3 +99,10 @@ const AudioPlayer = ({
 };
 
 export default AudioPlayer;
+
+function formatDuration(durationSeconds) {
+  const minutes = Math.floor(durationSeconds / 60);
+  const seconds = Math.floor(durationSeconds % 60);
+  const formattedSeconds = seconds.toString().padStart(2, "0");
+  return `${minutes}:${formattedSeconds}`;
+}
