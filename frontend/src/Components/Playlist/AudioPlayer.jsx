@@ -45,7 +45,10 @@ const AudioPlayer = ({
 
     return () => {
       clearInterval(intervalId);
-      audioRef.current.removeEventListener("ended", handleEnded);
+      if (audioRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        audioRef.current.removeEventListener("ended", handleEnded);
+      }
     };
   }, [handleNext]);
 

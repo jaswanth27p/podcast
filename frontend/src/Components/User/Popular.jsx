@@ -31,8 +31,13 @@ const Popular = () => {
 };
 
 const PodcastCard = ({ title, description, imageUrl, genres, duration }) => {
+  // Set the maximum number of genres to display
+  const maxGenres = 1;
+  const truncatedGenres = genres.slice(0, maxGenres);
+  const remainingGenres = genres.length - maxGenres;
+
   return (
-    <div className="max-w-sm rounded overflow-hidden shadow-lg">
+    <div className="rounded overflow-hidden shadow-lg max-w-sm min-w-xs">
       <img src={imageUrl} alt={title} className="w-full h-48 object-cover" />
       <div className="px-6 py-4">
         <div className="font-bold text-xl mb-2">{title}</div>
@@ -40,7 +45,7 @@ const PodcastCard = ({ title, description, imageUrl, genres, duration }) => {
       </div>
       <div className="px-6 py-4 overflow-x-auto">
         <div className="flex min-w-max">
-          {genres.map((genre, index) => (
+          {truncatedGenres.map((genre, index) => (
             <span
               key={index}
               className="inline-block bg-gray-200 rounded-full px-2 mx-1 py-1 my-1 text-sm font-semibold text-gray-700"
@@ -48,6 +53,11 @@ const PodcastCard = ({ title, description, imageUrl, genres, duration }) => {
               {genre}
             </span>
           ))}
+          {remainingGenres > 0 && (
+            <span className="inline-block bg-gray-200 rounded-full px-2 mx-1 my-1 py-1 text-sm font-semibold text-gray-700">
+              +{remainingGenres} more
+            </span>
+          )}
           <span className="inline-block bg-gray-200 rounded-full px-2 mx-1 my-1 py-1 text-sm font-semibold text-gray-700">
             Duration: {Math.round(duration / 60)} mins
           </span>
@@ -56,5 +66,6 @@ const PodcastCard = ({ title, description, imageUrl, genres, duration }) => {
     </div>
   );
 };
+
 
 export default Popular;
