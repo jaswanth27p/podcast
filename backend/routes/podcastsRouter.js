@@ -7,13 +7,13 @@ const {
   updatePodcast, // Add the controller function for updating
   deletePodcast, // Add the controller function for deleting
 } = require("../controllers/podcastsContoller");
-const { validateAdmin } = require("../middleware/validateUser");
+const { validateAdmin ,validateAccount } = require("../middleware/validateUser");
 
 podcastsRouter.route("/").post(validateAdmin,createPodcast).get(validateAdmin,getPodcastsByUser);
 podcastsRouter
   .route("/:id")
-  .put(updatePodcast)
-  .delete(deletePodcast)
-  .get(getPodcast);
+  .put(validateAdmin,updatePodcast)
+  .delete(validateAdmin,deletePodcast)
+  .get(validateAccount,getPodcast);
 
 module.exports = podcastsRouter;
