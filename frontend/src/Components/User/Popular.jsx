@@ -1,25 +1,22 @@
 /* eslint-disable react/prop-types */
-import {
-  useCategoriesSelector,
-} from "../../redux/reducers/categories";
-
-
+import { useCategoriesSelector } from "../../redux/reducers/categories";
+import React, { useState } from "react";
 
 const Popular = () => {
   const { trending: trendingData } = useCategoriesSelector();
-   
 
   return (
-    <div className="container mx-auto p-4 ">
-      <h2 className=" text-xl p-2 font-semibold">Trending</h2>
+    <div className="container mx-auto sm:px-2 md:px-5">
+      <h2 className="text-lg px-2 py-2 font-semibold sm:text-xl">Trending</h2>
       <div className="overflow-x-auto">
-        <div className="flex gap-4 min-w-max ">
+        <div className="flex flex-col sm:flex-row gap-5 min-w-max">
           {trendingData.data.map((podcast, index) => (
             <PodcastCard
               key={index}
               title={podcast.title}
               description={podcast.description}
               imageUrl={podcast.image_url}
+              podcastUrl={podcast.audio_url}
               genres={podcast.genres}
               duration={podcast.duration}
             />
@@ -30,21 +27,41 @@ const Popular = () => {
   );
 };
 
-const PodcastCard = ({ title, description, imageUrl, genres, duration }) => {
+const PodcastCard = ({
+  title,
+  description,
+  imageUrl,
+  podcastUrl,
+  genres,
+  duration,
+}) => {
   // Set the maximum number of genres to display
   const maxGenres = 1;
   const truncatedGenres = genres.slice(0, maxGenres);
   const remainingGenres = genres.length - maxGenres;
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handleTogglePlay = () => {
+    // You should implement the logic to play or pause the audio here
+    // For simplicity, we'll just toggle the isPlaying state in this example
+    setIsPlaying(!isPlaying);
+  };
+
+  const playButtonIcon = isPlaying ? "Pause" : "Play";
 
   return (
-    <div className="rounded overflow-hidden shadow-lg max-w-sm min-w-xs">
-      <img src={imageUrl} alt={title} className="w-full h-48 object-cover" />
-      <div className="px-6 py-4">
-        <div className="font-bold text-xl mb-2">{title}</div>
-        <p className="text-gray-700 text-base">{description}</p>
+    <div className="rounded-lg overflow-hidden shadow-lg max-w-sm min-w-xs border border-gray-200 hover:bg-blue-200 hover:border-gray-300 transform transition-transform duration-300 hover:scale-95">
+      <img
+        src={imageUrl}
+        alt={title}
+        className="w-full h-32 sm:h-48 object-cover"
+      />
+      <div className="px-5 pt-2">
+        <div className="font-bold text-lg">{title}</div>
+        <p className="text-sm text-gray-700">{description}</p>
       </div>
-      <div className="px-6 py-4 overflow-x-auto">
-        <div className="flex min-w-max">
+      <div className="px-3 pb-5 pt-2 overflow-x-auto">
+        <div className="flex flex-wrap sm:flex-no-wrap min-w-mx">
           {truncatedGenres.map((genre, index) => (
             <span
               key={index}
@@ -58,14 +75,19 @@ const PodcastCard = ({ title, description, imageUrl, genres, duration }) => {
               +{remainingGenres} more
             </span>
           )}
-          <span className="inline-block bg-gray-200 rounded-full px-2 mx-1 my-1 py-1 text-sm font-semibold text-gray-700">
-            Duration: {Math.round(duration / 60)} mins
+          <span className="inline-block bg-gray-200 rounded-full px-2 mx-1 my-1 py-1 text-xs font-semibold text-gray-700">
+            {Math.round(duration / 60)} mins
           </span>
+          <button
+            className="inline-block bg-gray-200 rounded-full px-2 mx-1 my-1 py-1 text-xs font-semibold text-gray-700 cursor-pointer"
+            onClick={handleTogglePlay}
+          >
+            {playButtonIcon}
+          </button>
         </div>
       </div>
     </div>
   );
 };
-
 
 export default Popular;

@@ -5,12 +5,12 @@ const Banner = ({onOpen}) => {
       <div className="container mx-auto">
         <div className="flex flex-wrap items-center text-center md:text-left">
           <div className="w-full md:w-1/2 lg:w-4/12 px-4">
-            <h1 className="mb-3 text-3xl md:text-4xl lg:text-5xl font-bold">
+            <h1 className="mb-3 text-3xl md:text-4xl lg:text-5xl font-bold ml-5">
               Tell Your Story to the World
             </h1>
             <button
               onClick={() => onOpen("Admin")}
-              className="border rounded-lg p-3 mt-3 mb-2 bg-blue-500 text-white hover:bg-gray-500"
+              className="border rounded-lg p-3 mt-3 mb-2 bg-blue-500 text-white hover:bg-gray-500 ml-5"
             >
               Become a Creator
             </button>
