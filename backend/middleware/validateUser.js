@@ -33,4 +33,16 @@ const validateAdmin = (req, res, next) => {
     res.status(401).json({ message: "Unauthorized" });
   }
 };
-module.exports = { validateUser, validateAdmin };
+
+const validateAccount= (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return res.status(401).json({ message: "Token not found" });
+  }
+  const user = verifyToken(token);
+  if (!user) {
+    return res.status(403).json({ message: "Token verification failed" });
+  }
+  next();
+};
+module.exports = { validateUser, validateAdmin ,validateAccount};

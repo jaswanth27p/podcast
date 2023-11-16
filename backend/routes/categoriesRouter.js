@@ -7,12 +7,13 @@ const {
   updateCategory,
   deleteCategory,
 } = require("../controllers/categoriesContoller");
+const {validateAccount ,validateAdmin} = require("../middleware/validateUser")
 
 // Route to get a list of categories
-categoryRouter.get("/", getCategories);
+categoryRouter.get("/",validateAccount, getCategories);
 
 // Route to create a new category
-categoryRouter.post("/", createCategory);
+categoryRouter.post("/",validateAdmin, createCategory);
 
 categoryRouter
   .route("/id/:id")
@@ -20,7 +21,7 @@ categoryRouter
   
 categoryRouter
   .route("/:name")
-  .put(updateCategory)
-  .delete(deleteCategory)
-  .get(getCategory);
+  .put(validateAdmin ,updateCategory)
+  .delete(validateAdmin,deleteCategory)
+  .get(validateAccount, getCategory);
 module.exports = categoryRouter;

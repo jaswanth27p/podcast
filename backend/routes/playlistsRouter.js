@@ -8,9 +8,10 @@ const {
   deletePlaylist,
   getPlaylistsByUser,
 } = require("../controllers/playlistsController");
+const { validateUser } = require("../middleware/validateUser");
 
 // Route to create a new playlist
-playlistRouter.post("/", createPlaylist);
+playlistRouter.post("/",validateUser, createPlaylist);
 
 // Route to get a list of all playlists
 playlistRouter.get("/", getPlaylists);
@@ -18,9 +19,9 @@ playlistRouter.get("/", getPlaylists);
 playlistRouter
   .route("/:id")
   .get(getPlaylistById)
-  .put(updatePlaylist)
-  .delete(deletePlaylist);
+  .put(validateUser,updatePlaylist)
+  .delete(validateUser ,deletePlaylist);
 // Route to get a list of playlists based on the user
-playlistRouter.get("/user/:user_id", getPlaylistsByUser);
+playlistRouter.get("/user/:user_id",validateUser, getPlaylistsByUser);
 
 module.exports = playlistRouter;
