@@ -29,22 +29,35 @@ const Genres = () => {
     fetchGenres();
   }, []);
 
+  // Array of image URLs for genres
+const genreImageURLs = [
+  "url('https://cdn.ces.tech/ces/media/articles/2022/october/innovation.jpg')",
+  "url('https://cdn.create.vista.com/api/media/small/310924836/stock-photo-books-microscope-glass-test-tubes-flasks-colorful-liquid-blue-background')",
+  "url('https://media.istockphoto.com/id/1280587810/photo/healthy-eating-exercising-weight-and-blood-pressure-control.jpg?b=1&s=612x612&w=0&k=20&c=VVrfTgmWB2kfCkCJbDJQ514mkmQcVQ9cQf44udxOkNA=')",
+  "url('https://wallpapers.com/images/hd/horror-pictures-uesit3ikn1jfot2s.jpg')",
+  "url('https://s01.sgp1.digitaloceanspaces.com/large/859674-75199-axhywvjxyg-1511960362.jpg')",
+  "url('https://brightwatergroup.com/media/1752/health-benefits-of-laughter-3.png?width=930&height=465')",
+  "url('https://media.istockphoto.com/id/1264074047/vector/breaking-news-background.jpg?s=612x612&w=0&k=20&c=C5BryvaM-X1IiQtdyswR3HskyIZCqvNRojrCRLoTN0Q=')",
+  "url('https://i0.wp.com/picjumbo.com/wp-content/uploads/business-man-speaking-in-front-of-colleagues-at-team-meeting-free-photo.jpg?w=600&quality=80')",
+];
+
+
   const handleGenreSelect = (genre) => {
     navigate(`/playlists/${genre.name}`);
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-xl p-2 font-semibold">Genres</h2>
+    <div className="container mx-auto px-5">
+      <h2 className="text-xl py-2 px-2 font-semibold">Genres</h2>
       <div className="overflow-x-auto">
-        <div className="flex gap-4 min-w-max">
+      <div className="flex gap-5 justify-center">
           {genres.map((genre, index) => (
             <div key={index} onClick={() => handleGenreSelect(genre)}>
               <Card
                 sx={{
-                  width: 120,
-                  height: 120,
-                  backgroundImage: `url("https://preview.colorlib.com/theme/megapod/img/podcast/podcast-4.jpg")`,
+                  width: 132,
+                  height: 132,
+                  backgroundImage: genreImageURLs[index],
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                 }}

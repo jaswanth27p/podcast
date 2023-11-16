@@ -91,7 +91,7 @@ function AudioItem() {
           aria-controls="filter-menu"
           aria-haspopup="true"
           onClick={(event) => setAnchorEl(event.currentTarget)}
-          className="mb-2 w-full md:w-1/3 ml-2"
+          className="mb-2 w-full md:w-1/3 ml-2 py-2"
         >
           Filter by Category
         </Button>
@@ -101,7 +101,7 @@ function AudioItem() {
           placeholder="Search..."
           value={searchQuery}
           onChange={(e) => handleSearch(e.target.value)} // Add this line for the onChange event
-          className="mb-2 border border-gray-500 rounded-lg p-1.5 w-1/3"
+          className="mb-2 border border-gray-500 rounded-lg px-1.5 w-1/3 py-2"
         />
         <Menu
           key="menu"

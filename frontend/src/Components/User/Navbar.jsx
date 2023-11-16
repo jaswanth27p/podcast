@@ -44,7 +44,7 @@ export default function Navbar() {
     <>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static" className="bg-white shadow">
-          <Toolbar className="bg-blue-100 rounded-lg md:px-4">
+          <Toolbar className="bg-blue-100 md:px-4">
             <Typography
               className="text-black font-bold"
               variant="h6"
@@ -85,7 +85,7 @@ export default function Navbar() {
         <div className="absolute top-15 right-5">
           <button
             onClick={handleLogout}
-            className="bg-gray-600  rounded block px-5 py-2 text-sm text-gray-100 hover:bg-red-500"
+            className="bg-gray-600  rounded block px-5 py-3 text-sm text-gray-100 hover:bg-red-500"
           >
             Logout
           </button>
