@@ -7,31 +7,27 @@ const playlistSlice = createSlice({
   name: "playlists",
   initialState: {},
   reducers: {
-    setUserPlaylists: (state, action) => {
-      state = action.payload;
-    },
-    clearUserPlaylists: (state) => {
-      state = {};
-    },
+    setPlaylists: (state, action) => action.payload,
+    clearPlaylists: (state) => null,
   },
 });
 
-export const { setUserPlaylists, clearUserPlaylists } = playlistSlice.actions;
+export const { setPlaylists, clearPlaylists } = playlistSlice.actions;
 
 // Selectors
-export const selectUserPlaylists = (state) => state.playlists;
+export const selectPlaylists = (state) => state.playlists;
 
-// Custom hooks
-export const useUserPlaylistsSelector = () => useSelector(selectUserPlaylists);
-
-export const useSetPlaylists = (playlist) => {
+// Action creators
+export const useSetPlaylists = () => {
   const dispatch = useDispatch();
-  return () => dispatch(setUserPlaylists(playlist));
+  return (playlistData) => dispatch(setPlaylists(playlistData));
 };
 
-export const useClearUserPlaylists = () => {
+export const useClearPlaylists = () => {
   const dispatch = useDispatch();
-  return () => dispatch(clearUserPlaylists());
+  return () => dispatch(clearPlaylists());
 };
+
+export const usePlaylistsSelector = () => useSelector(selectPlaylists);
 
 export default playlistSlice.reducer;

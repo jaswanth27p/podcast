@@ -8,7 +8,7 @@ import Genres from "./genres";
 import Popular from "./Popular";
 import Latest from "./Latest";
 import Fotter from "../Home/Fotter";
-import {useCategoriesSelector ,useFetchTrendingAndLatest} from "../../redux/reducers/categories";
+import { useFetchTrendingAndLatest} from "../../redux/reducers/categories";
 
 const User = () => {
   const navigate = useNavigate();

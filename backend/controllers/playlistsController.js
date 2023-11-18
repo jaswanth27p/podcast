@@ -3,7 +3,8 @@ const Podcast = require("../models/podcasts")
 
 // Controller function to create a new playlist
 const createPlaylist = async (req, res) => {
-  const { user_id, name } = req.body;
+  const { name } = req.body;
+  const {id :user_id} =req.user;
 
   try {
     // Create a new playlist document with an empty array for podcasts
@@ -52,10 +53,11 @@ const getPlaylistById = async (req, res) => {
   }
 };
 
-// Controller function to update an existing playlist by ID
+// Controller function to update an existing playlist by ID and add a new podcast
 const updatePlaylist = async (req, res) => {
   const playlistId = req.params.id;
-  const { name, podcasts } = req.body;
+  const { podcastId } = req.body;
+  
 
   try {
     // Find the playlist by ID
@@ -65,9 +67,13 @@ const updatePlaylist = async (req, res) => {
       return res.status(404).json({ message: "Playlist not found" });
     }
 
-    // Update the playlist properties
-    playlist.name = name;
-    playlist.podcasts = podcasts;
+    // Check if the podcastId already exists in the playlist
+    if (playlist.podcasts.includes(podcastId)) {
+      return res.status(400).json({ message: "Podcast already exists in the playlist" });
+    }
+
+    // Add the new podcast to the playlist
+    playlist.podcasts.push(podcastId);
 
     // Save the updated playlist to the database
     await playlist.save();
@@ -78,6 +84,7 @@ const updatePlaylist = async (req, res) => {
     res.status(500).json({ message: "Failed to update playlist" });
   }
 };
+
 
 // Controller function to delete an existing playlist by ID
 const deletePlaylist = async (req, res) => {

@@ -3,7 +3,7 @@ import Admin from "./Components/Admin/Admin";
 import Home from "./Components/Home/Home";
 import User from "./Components/User/User";
 import GenrePlaylists from "./Components/Playlist/GenrePlaylists";
-import UserPlaylists from "./Components/UserPlaylist/UserPlaylists"
+import UserPlaylists from "./Components/Playlist/UserPlaylists"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";

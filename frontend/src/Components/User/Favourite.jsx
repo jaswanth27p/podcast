@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import Accordion from "@mui/material/Accordion";
@@ -10,6 +11,8 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
+import { useSetPlaylists  } from "../../redux/reducers/playlists"; 
+
 
 const fetchPlaylists = async () => {
   try {
@@ -26,7 +29,7 @@ const fetchPlaylists = async () => {
   }
 };
 
-const createPlaylist = async (name, user_id) => {
+const createPlaylist = async (name ) => {
   try {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const response = await fetch(`${backendUrl}/playlists`, {
@@ -35,7 +38,7 @@ const createPlaylist = async (name, user_id) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, user_id }),
+      body: JSON.stringify({ name }),
     });
 
     if (!response.ok) {
@@ -58,14 +61,16 @@ const Favourite = () => {
   const [newPlaylistName, setNewPlaylistName] = useState("");
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const setPlaylist =useSetPlaylists();
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchPlaylists();
       setPlaylists(data);
-      console.log(data);
+      setPlaylist(data)
     };
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getRandomColor = () => {
@@ -93,10 +98,8 @@ const Favourite = () => {
         // You might want to set an error state or display an error message to the user
         return;
       }
-
-      // Update playlists state
-      setPlaylists((prevPlaylists) => [...prevPlaylists, newPlaylist]);
-
+      const data = await fetchPlaylists();
+      setPlaylists(data);
       setNewPlaylistName("");
       setIsModalOpen(false); // Close the modal
     } catch (error) {
@@ -128,7 +131,7 @@ const Favourite = () => {
               {playlists.map((playlist, index) => (
                 <div
                   onClick={() => handlePlaylistSelect(playlist)}
-                  key={playlist.name}
+                  key={index}
                 >
                   <Cards
                     key={index} // Add a unique key here, for example, playlist.id if available
@@ -202,9 +205,10 @@ const Cards = ({ title, backgroundColor }) => (
     }}
   >
     <CardContent className="flex items-center justify-center h-full">
-      {title}
+      <Typography>{title}</Typography>
     </CardContent>
   </Card>
 );
+
 
 export default Favourite;

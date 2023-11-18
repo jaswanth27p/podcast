@@ -27,6 +27,7 @@ const GenrePlaylists = () => {
   useEffect(() => {
     // Fetch the category data when the genre changes
     dispatchFetchCategory();
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -106,7 +107,6 @@ const GenrePlaylists = () => {
                       <ul className="py-1 text-xs text-gray-700 dark:text-gray-200">
                         <li>
                           <a
-                            href="#"
                             className="block py-2 hover:bg-gray-100 dark:hover:bg-white-600 dark:hover:text-black text-center"
                             onClick={() =>
                               setShowPlaylist(
@@ -122,7 +122,10 @@ const GenrePlaylists = () => {
                   </div>
                 )}
                 {showPlaylist && (
-                  <PlaylistModal onClose={() => setShowPlaylist(false)} />
+                  <PlaylistModal
+                    podcastId={playlists[currentPlaylistIndex]?._id}
+                    onClose={() => setShowPlaylist(false)}
+                  />
                 )}
               </div>
             </div>

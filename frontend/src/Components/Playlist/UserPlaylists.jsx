@@ -4,7 +4,7 @@ import {  useParams } from "react-router-dom";
 import AudioPlayer from "./AudioPlayer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faEllipsisH } from "@fortawesome/free-solid-svg-icons";
-import PlaylistModal from "./PlaylistModal";
+
 
 const formatDuration = (duration) => {
   const minutes = Math.floor(duration / 60);
@@ -65,6 +65,10 @@ const UserPlaylist = () => {
   const handlePlaylistClick = (index) => {
     setCurrentPlaylistIndex(index);
   };
+
+  const handleDeleteFromPlaylist =(podcastId) => {
+
+  }
  
  
   if (Playlist){
@@ -76,6 +80,7 @@ const UserPlaylist = () => {
         <div className="w-2/3 m-2">
           {Playlist &&
             Playlist.map((playlist, index) => (
+              
               <div
                 key={index}
                 className={`playlist-item border p-2 mb-2 rounded-lg bg-white transition duration-300 ease-in-out hover:bg-gray-200 flex items-center justify-between`}
@@ -130,23 +135,18 @@ const UserPlaylist = () => {
                       <ul className="py-1 text-xs text-gray-700 dark:text-gray-200">
                         <li>
                           <a
-                            href="#"
                             className="block py-2 hover:bg-gray-100 dark:hover:bg-white-600 dark:hover:text-black text-center"
                             onClick={() =>
-                              setShowPlaylist(
-                                (prevShowPlaylist) => !prevShowPlaylist
-                              )
+                              handleDeleteFromPlaylist(playlist._id)
                             }
                           >
-                            Playlist+=
+                            Remove
                           </a>
+                          
                         </li>
                       </ul>
                     </div>
                   </div>
-                )}
-                {showPlaylist && (
-                  <PlaylistModal onClose={() => setShowPlaylist(false)} />
                 )}
                 </div>
               </div>
