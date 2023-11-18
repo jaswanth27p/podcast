@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
-import {  useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import AudioPlayer from "./AudioPlayer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faEllipsisH } from "@fortawesome/free-solid-svg-icons";
@@ -8,6 +8,7 @@ import {
   useFetchCategory,
   useCategoriesSelector,
 } from "../../redux/reducers/categories";
+import PlaylistModal from "./PlaylistModal";
 
 const formatDuration = (duration) => {
   const minutes = Math.floor(duration / 60);
@@ -20,12 +21,14 @@ const GenrePlaylists = () => {
   const dispatchFetchCategory = useFetchCategory(genre);
   const categories = useCategoriesSelector();
   const [currentPlaylistIndex, setCurrentPlaylistIndex] = useState(0);
+  const [showDropdown, setShowDropdown] = useState(null);
+  const [showPlaylist, setShowPlaylist] = useState(false);
 
   useEffect(() => {
     // Fetch the category data when the genre changes
     dispatchFetchCategory();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const playlists = categories[genre]?.data || [];
   const handleLoveClick = (index) => {
@@ -82,6 +85,45 @@ const GenrePlaylists = () => {
                 <span className="mx-2 text-gray-500 text-xs">
                   {formatDuration(playlist.duration)}
                 </span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowDropdown(showDropdown === index ? null : index);
+                  }}
+                  className={`ml-2 text-gray-500 focus:outline-none ${
+                    showDropdown === index ? "text-blue-500" : "text-gray-500"
+                  }`}
+                >
+                  <FontAwesomeIcon icon={faEllipsisH} className="h-4 w-4" />
+                </button>
+
+                {showDropdown === index && (
+                  <div className="absolute top-full left-0 mt-1 z-20">
+                    <div
+                      id="dropdownDotsHorizontal"
+                      className="z-20 bg-white divide-y divide-blue-100 rounded-lg shadow w-32 dark:bg-blue-700 dark:divide-blue-600"
+                    >
+                      <ul className="py-1 text-xs text-gray-700 dark:text-gray-200">
+                        <li>
+                          <a
+                            href="#"
+                            className="block py-2 hover:bg-gray-100 dark:hover:bg-white-600 dark:hover:text-black text-center"
+                            onClick={() =>
+                              setShowPlaylist(
+                                (prevShowPlaylist) => !prevShowPlaylist
+                              )
+                            }
+                          >
+                            Playlist+=
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                )}
+                {showPlaylist && (
+                  <PlaylistModal onClose={() => setShowPlaylist(false)} />
+                )}
               </div>
             </div>
           ))}

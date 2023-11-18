@@ -26,7 +26,7 @@ const fetchPlaylists = async () => {
   }
 };
 
-const createPlaylist = async (name) => {
+const createPlaylist = async (name, user_id) => {
   try {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const response = await fetch(`${backendUrl}/playlists`, {
@@ -35,10 +35,17 @@ const createPlaylist = async (name) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name }),
+      body: JSON.stringify({ name, user_id }),
     });
+
+    if (!response.ok) {
+      // Handle HTTP error
+      console.error("Failed to create playlist:", response.statusText);
+      return null;
+    }
+
     const data = await response.json();
-    return data;
+    return data; // Assuming your backend returns the created playlist object
   } catch (error) {
     console.error("Error creating playlist:", error);
     return null;
@@ -50,12 +57,13 @@ const Favourite = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState("");
   const navigate = useNavigate();
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchPlaylists();
       setPlaylists(data);
-      console.log(data)
+      console.log(data);
     };
     fetchData();
   }, []);
@@ -70,9 +78,14 @@ const Favourite = () => {
 
   const handleCreatePlaylist = async () => {
     try {
-
+      if (!newPlaylistName) {
+        setError("Please fill all fields.");
+        return;
+      }
       // Create playlist
-      const newPlaylist = await createPlaylist(newPlaylistName);
+      const newPlaylist = await createPlaylist(
+        newPlaylistName /* pass user_id here */
+      );
 
       if (!newPlaylist) {
         // Handle error creating playlist
@@ -85,12 +98,12 @@ const Favourite = () => {
       setPlaylists((prevPlaylists) => [...prevPlaylists, newPlaylist]);
 
       setNewPlaylistName("");
-      setIsModalOpen(false);
+      setIsModalOpen(false); // Close the modal
     } catch (error) {
       // Handle general error (e.g., network error)
       console.error("Error creating playlist:", error);
       // You might want to set an error state or display an error message to the user
-    } 
+    }
   };
 
   const handlePlaylistSelect = (playlist) => {
@@ -111,15 +124,17 @@ const Favourite = () => {
         </AccordionSummary>
         <AccordionDetails>
           <div className="container mx-auto overflow-x-auto">
-            <div className="flex flex-wrap gap-5" >
+            <div className="flex flex-wrap gap-5">
               {playlists.map((playlist, index) => (
-                <div onClick={() => handlePlaylistSelect(playlist)} key={playlist.name}>
-                <Cards
-                  key={index} // Add a unique key here, for example, playlist.id if available
-                  title={playlist.name}
-                  backgroundColor={getRandomColor()}
-                  
-                />
+                <div
+                  onClick={() => handlePlaylistSelect(playlist)}
+                  key={playlist.name}
+                >
+                  <Cards
+                    key={index} // Add a unique key here, for example, playlist.id if available
+                    title={playlist.name}
+                    backgroundColor={getRandomColor()}
+                  />
                 </div>
               ))}
               <Card

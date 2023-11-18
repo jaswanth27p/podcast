@@ -19,7 +19,7 @@ const getCategory= async (req, res) => {
   try {
     // Retrieve the category by its name
     const category = await Category.findOne({ name: categoryName });
-
+    //playlist controllers niteesh
     if (!category) {
       return res.status(404).json({ message: "Category not found" });
     }

@@ -3,11 +3,11 @@ const Podcast = require("../models/podcasts")
 
 // Controller function to create a new playlist
 const createPlaylist = async (req, res) => {
-  const { user_id, name, podcasts } = req.body;
+  const { user_id, name } = req.body;
 
   try {
-    // Create a new playlist document
-    const newPlaylist = new Playlist({ user_id, name, podcasts });
+    // Create a new playlist document with an empty array for podcasts
+    const newPlaylist = new Playlist({ user_id, name, podcasts: [] });
 
     // Save the new playlist to the database
     await newPlaylist.save();
