@@ -101,7 +101,7 @@ const deletePlaylist = async (req, res) => {
 // Controller function to get a list of playlists based on the user
 const getPlaylistByName = async (req, res) => {
   const name = req.params.name;
-
+  const {id :user_id} =req.user;
   try {
     // Retrieve the category by its name
     const playlist = await Playlist.findOne({ name: name });
@@ -109,13 +109,15 @@ const getPlaylistByName = async (req, res) => {
     if (!playlist) {
       return res.status(404).json({ message: "playlist not found" });
     }
-    // Extract podcast IDs from the category
-    const podcastIds = playlist.podcasts|| [];
-
-    // Fetch podcasts using the array of podcast IDs
-    const podcasts = await Podcast.find({ _id: { $in: podcastIds } });
-    console.log(podcasts)
-    res.status(200).json(podcasts);
+    if (playlist.user_id==user_id){
+      // Extract podcast IDs from the category
+      const podcastIds = playlist.podcasts || [];
+      // Fetch podcasts using the array of podcast IDs
+      const podcasts = await Podcast.find({ _id: { $in: podcastIds } });
+      res.status(200).json(podcasts);
+    }else{
+        res.status(401).json({ message: "Unauthorized" });
+    }
   } catch (error) {
     console.error("Error fetching category:", error);
     res.status(500).json({ message: "Failed to fetch category" });

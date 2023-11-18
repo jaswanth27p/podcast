@@ -20,6 +20,6 @@ playlistRouter
   .put(validateUser,updatePlaylist)
   .delete(validateUser ,deletePlaylist);
 // Route to get a list of playlists based on the user
-playlistRouter.get("/name/:name" , getPlaylistByName);
+playlistRouter.get("/name/:name",validateUser , getPlaylistByName);
 
 module.exports = playlistRouter;
