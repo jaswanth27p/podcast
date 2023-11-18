@@ -29,7 +29,6 @@ const Genres = () => {
     fetchGenres();
   }, []);
 
-  // Array of image URLs for genres
 const genreImageURLs = [
   "url('https://cdn.ces.tech/ces/media/articles/2022/october/innovation.jpg')",
   "url('https://cdn.create.vista.com/api/media/small/310924836/stock-photo-books-microscope-glass-test-tubes-flasks-colorful-liquid-blue-background')",
@@ -50,10 +49,10 @@ const genreImageURLs = [
     <div className="container mx-auto px-5">
       <h2 className="text-xl py-2 px-2 font-semibold">Genres</h2>
       <div className="overflow-x-auto">
-      <div className="flex gap-5 justify-center">
+      <div className="flex flex-wrap gap-5 justify-center">
           {genres.map((genre, index) => (
-            <div key={index} onClick={() => handleGenreSelect(genre)}>
-              <Card
+            <div key={index} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/6 p-2" onClick={() => handleGenreSelect(genre)}>
+              <Card className="transition-transformtransform hover:scale-105"
                 sx={{
                   width: 132,
                   height: 132,

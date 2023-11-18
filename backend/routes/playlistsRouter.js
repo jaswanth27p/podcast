@@ -1,3 +1,5 @@
+import { validateUser } from "../middleware/validateUser";
+
 const express = require("express");
 const playlistRouter = express.Router();
 const {
@@ -14,7 +16,7 @@ const { validateUser } = require("../middleware/validateUser");
 playlistRouter.post("/",validateUser, createPlaylist);
 
 // Route to get a list of all playlists
-playlistRouter.get("/", getPlaylists);
+playlistRouter.get("/", validateUser, getPlaylists);
 
 playlistRouter
   .route("/:id")

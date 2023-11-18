@@ -26,7 +26,7 @@ const Latest = () => {
     <div className="container mx-auto sm:px-2 md:px-5">
       <h2 className="text-lg px-2 py-2 font-semibold sm:text-xl">Latest</h2>
       <div className="overflow-x-auto">
-      <div className="flex sm:flex-row gap-5 min-w-max justify-center">
+      <div className="flex flex-col sm:flex-row gap-5 min-w-max justify-center">
           {reversedData.map((podcast, index) => (
             <PodcastCard
               key={index}
@@ -95,7 +95,7 @@ const PodcastCard = ({
   const playButtonIcon = isPlaying ? "Pause" : "Play";
 
   return (
-    <div className="rounded-lg overflow-hidden shadow-lg w-56 min-w-xs border border-gray-200 hover:bg-blue-200 hover:border-gray-300 transform transition-transform duration-300 hover:scale-95">
+    <div className="rounded-lg overflow-hidden shadow-lg w-full sm:w-56 min-w-xs border border-gray-200 hover:bg-blue-200 hover:border-gray-300 transform transition-transform duration-300 hover:scale-95">
       <img
         src={imageUrl}
         alt={title}

@@ -25,7 +25,14 @@ export const selectUserPlaylists = (state) => state.playlists;
 export const fetchUserPlaylistsAsync = () => async (dispatch) => {
   try {
     // Simulating an API call to fetch user playlists
-    const response = await fetch("https://api.example.com/user/playlists");
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    const response = await fetch(
+      `${backendUrl}/playlists/`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
     const playlistsData = await response.json();
 
     dispatch(setUserPlaylists(playlistsData));

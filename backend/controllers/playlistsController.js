@@ -20,9 +20,11 @@ const createPlaylist = async (req, res) => {
 
 // Controller function to get a list of all playlists
 const getPlaylists = async (req, res) => {
+  const { id:user_id} = req.user;
+
   try {
     // Retrieve a list of all playlists from the database
-    const playlists = await Playlist.find();
+    const playlists = await Playlist.find({ user_id });
     res.status(200).json(playlists);
   } catch (error) {
     console.error("Error fetching playlists:", error);

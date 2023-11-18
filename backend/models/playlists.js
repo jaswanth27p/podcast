@@ -19,6 +19,8 @@ const playlistSchema = new mongoose.Schema({
   // Other playlist-related fields (e.g., description, date created)
 });
 
+playlistSchema.index({ user_id: 1, name: 1 }, { unique: true });
+
 const Playlist = mongoose.model("Playlist", playlistSchema);
 
 module.exports = Playlist;
