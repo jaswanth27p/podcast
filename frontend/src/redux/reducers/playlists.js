@@ -21,32 +21,12 @@ export const { setUserPlaylists, clearUserPlaylists } = playlistSlice.actions;
 // Selectors
 export const selectUserPlaylists = (state) => state.playlists;
 
-// Thunk actions
-export const fetchUserPlaylistsAsync = () => async (dispatch) => {
-  try {
-    // Simulating an API call to fetch user playlists
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
-    const response = await fetch(
-      `${backendUrl}/playlists/`,
-      {
-        method: "GET",
-        credentials: "include",
-      }
-    );
-    const playlistsData = await response.json();
-
-    dispatch(setUserPlaylists(playlistsData));
-  } catch (error) {
-    console.error("Error fetching user playlists:", error);
-  }
-};
-
 // Custom hooks
 export const useUserPlaylistsSelector = () => useSelector(selectUserPlaylists);
 
-export const useFetchUserPlaylists = () => {
+export const useSetPlaylists = (playlist) => {
   const dispatch = useDispatch();
-  return () => dispatch(fetchUserPlaylistsAsync());
+  return () => dispatch(setUserPlaylists(playlist));
 };
 
 export const useClearUserPlaylists = () => {

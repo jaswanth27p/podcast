@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -54,8 +55,8 @@ const Favourite = () => {
     const fetchData = async () => {
       const data = await fetchPlaylists();
       setPlaylists(data);
+      console.log(data)
     };
-
     fetchData();
   }, []);
 
@@ -69,7 +70,6 @@ const Favourite = () => {
 
   const handleCreatePlaylist = async () => {
     try {
-      setLoading(true);
 
       // Create playlist
       const newPlaylist = await createPlaylist(newPlaylistName);
@@ -90,9 +90,7 @@ const Favourite = () => {
       // Handle general error (e.g., network error)
       console.error("Error creating playlist:", error);
       // You might want to set an error state or display an error message to the user
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
   const handlePlaylistSelect = (playlist) => {

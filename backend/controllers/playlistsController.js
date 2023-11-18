@@ -1,4 +1,5 @@
 const Playlist = require("../models/playlists");
+const Podcast = require("../models/podcasts")
 
 // Controller function to create a new playlist
 const createPlaylist = async (req, res) => {
@@ -98,17 +99,26 @@ const deletePlaylist = async (req, res) => {
 };
 
 // Controller function to get a list of playlists based on the user
-const getPlaylistsByUser = async (req, res) => {
-  const user_id = req.params.user_id;
+const getPlaylistByName = async (req, res) => {
+  const name = req.params.name;
 
   try {
-    // Retrieve playlists associated with the specified user
-    const playlists = await Playlist.find({ user_id });
+    // Retrieve the category by its name
+    const playlist = await Playlist.findOne({ name: name });
 
-    res.status(200).json(playlists);
+    if (!playlist) {
+      return res.status(404).json({ message: "playlist not found" });
+    }
+    // Extract podcast IDs from the category
+    const podcastIds = playlist.podcasts|| [];
+
+    // Fetch podcasts using the array of podcast IDs
+    const podcasts = await Podcast.find({ _id: { $in: podcastIds } });
+    console.log(podcasts)
+    res.status(200).json(podcasts);
   } catch (error) {
-    console.error("Error fetching playlists:", error);
-    res.status(500).json({ message: "Failed to fetch playlists" });
+    console.error("Error fetching category:", error);
+    res.status(500).json({ message: "Failed to fetch category" });
   }
 };
 
@@ -118,5 +128,5 @@ module.exports = {
   getPlaylistById,
   updatePlaylist,
   deletePlaylist,
-  getPlaylistsByUser,
+  getPlaylistByName,
 };

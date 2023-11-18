@@ -49,7 +49,7 @@ const genreImageURLs = [
     <div className="container mx-auto px-5">
       <h2 className="text-xl py-2 px-2 font-semibold">Genres</h2>
       <div className="overflow-x-auto">
-      <div className="flex flex-wrap gap-5 justify-center">
+      <div className="flex flex-col sm:flex-row gap-3 min-w-max justify-center">
           {genres.map((genre, index) => (
             <div key={index} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/6 p-2" onClick={() => handleGenreSelect(genre)}>
               <Card className="transition-transformtransform hover:scale-105"

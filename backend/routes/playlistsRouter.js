@@ -1,14 +1,11 @@
-import { validateUser } from "../middleware/validateUser";
-
 const express = require("express");
 const playlistRouter = express.Router();
 const {
   createPlaylist,
   getPlaylists,
-  getPlaylistById,
+  getPlaylistByName,
   updatePlaylist,
   deletePlaylist,
-  getPlaylistsByUser,
 } = require("../controllers/playlistsController");
 const { validateUser } = require("../middleware/validateUser");
 
@@ -20,10 +17,9 @@ playlistRouter.get("/", validateUser, getPlaylists);
 
 playlistRouter
   .route("/:id")
-  .get(getPlaylistById)
   .put(validateUser,updatePlaylist)
   .delete(validateUser ,deletePlaylist);
 // Route to get a list of playlists based on the user
-playlistRouter.get("/user/:user_id",validateUser, getPlaylistsByUser);
+playlistRouter.get("/name/:name" , getPlaylistByName);
 
 module.exports = playlistRouter;
