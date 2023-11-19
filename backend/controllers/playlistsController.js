@@ -1,10 +1,10 @@
 const Playlist = require("../models/playlists");
-const Podcast = require("../models/podcasts")
+const Podcast = require("../models/podcasts");
 
 // Controller function to create a new playlist
 const createPlaylist = async (req, res) => {
   const { name } = req.body;
-  const {id :user_id} =req.user;
+  const { id: user_id } = req.user;
 
   try {
     // Create a new playlist document with an empty array for podcasts
@@ -22,7 +22,7 @@ const createPlaylist = async (req, res) => {
 
 // Controller function to get a list of all playlists
 const getPlaylists = async (req, res) => {
-  const { id:user_id} = req.user;
+  const { id: user_id } = req.user;
 
   try {
     // Retrieve a list of all playlists from the database
@@ -53,11 +53,10 @@ const getPlaylistById = async (req, res) => {
   }
 };
 
-// Controller function to update an existing playlist by ID and add a new podcast
+// Controller function to update an existing playlist by ID and add/remove a podcast
 const updatePlaylist = async (req, res) => {
   const playlistId = req.params.id;
   const { podcastId } = req.body;
-  
 
   try {
     // Find the playlist by ID
@@ -69,7 +68,9 @@ const updatePlaylist = async (req, res) => {
 
     // Check if the podcastId already exists in the playlist
     if (playlist.podcasts.includes(podcastId)) {
-      return res.status(400).json({ message: "Podcast already exists in the playlist" });
+      return res
+        .status(400)
+        .json({ message: "Podcast already exists in the playlist" });
     }
 
     // Add the new podcast to the playlist
@@ -84,7 +85,6 @@ const updatePlaylist = async (req, res) => {
     res.status(500).json({ message: "Failed to update playlist" });
   }
 };
-
 
 // Controller function to delete an existing playlist by ID
 const deletePlaylist = async (req, res) => {
@@ -105,10 +105,29 @@ const deletePlaylist = async (req, res) => {
   }
 };
 
+const deletePlaylistByName = async (req, res) => {
+  const playlistName = req.params.name;
+  const { id :user_id} = req.user
+  try {
+    const playlist = await Playlist.findOne({ name: playlistName, user_id });
+
+    if (!playlist) {
+      return res.status(404).json({ message: "Playlist not found" });
+    }
+    // Remove the playlist
+    await playlist.remove();
+
+    res.status(200).json({ message: "Playlist deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting playlist:", error);
+    res.status(500).json({ message: "Failed to delete playlist" });
+  }
+};
+
 // Controller function to get a list of playlists based on the user
 const getPlaylistByName = async (req, res) => {
   const name = req.params.name;
-  const {id :user_id} =req.user;
+  const { id: user_id } = req.user;
   try {
     // Retrieve the category by its name
     const playlist = await Playlist.findOne({ name: name });
@@ -116,18 +135,44 @@ const getPlaylistByName = async (req, res) => {
     if (!playlist) {
       return res.status(404).json({ message: "playlist not found" });
     }
-    if (playlist.user_id==user_id){
+    if (playlist.user_id == user_id) {
       // Extract podcast IDs from the category
       const podcastIds = playlist.podcasts || [];
       // Fetch podcasts using the array of podcast IDs
       const podcasts = await Podcast.find({ _id: { $in: podcastIds } });
       res.status(200).json(podcasts);
-    }else{
-        res.status(401).json({ message: "Unauthorized" });
+    } else {
+      res.status(401).json({ message: "Unauthorized" });
     }
   } catch (error) {
     console.error("Error fetching category:", error);
     res.status(500).json({ message: "Failed to fetch category" });
+  }
+};
+
+const updatePlaylistByName = async (req, res) => {
+  const PlaylistName = req.params.name;
+  const { podcast_id } = req.body;
+  const { id : user_id} = req.user
+  try {
+    // Retrieve the category by its name
+    const playlist = await Playlist.findOne({ name: PlaylistName });
+    if (!playlist) {
+      return res.status(404).json({ message: "playlist not found" });
+    }
+    if  (user_id == playlist.user_id){
+      playlist.podcasts = playlist.podcasts.filter(
+        (id) => id.toString() !== podcast_id.toString()
+      );
+      await playlist.save();
+
+      res.status(200).json({ message: "Podcast removed from playlist" });
+    }else{
+      res.status(404).json({ message: "unautherized" });
+    }
+  } catch (error) {
+    console.error("Error fetching playlist:", error);
+    res.status(500).json({ message: "Failed to fetch playlist" });
   }
 };
 
@@ -138,4 +183,6 @@ module.exports = {
   updatePlaylist,
   deletePlaylist,
   getPlaylistByName,
+  updatePlaylistByName,
+  deletePlaylistByName
 };

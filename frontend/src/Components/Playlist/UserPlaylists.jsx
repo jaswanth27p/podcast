@@ -1,10 +1,17 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
-import {  useParams } from "react-router-dom";
+import { useNavigate , useParams } from "react-router-dom";
 import AudioPlayer from "./AudioPlayer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faEllipsisH } from "@fortawesome/free-solid-svg-icons";
-
+import {
+  faHeart,
+  faEllipsisH,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  usePlaylistsSelector,
+  useSetPlaylists,
+} from "../../redux/reducers/playlists";
 
 const formatDuration = (duration) => {
   const minutes = Math.floor(duration / 60);
@@ -22,18 +29,19 @@ const fetchPlaylist = async (name) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return [];
   }
 };
 
 const UserPlaylist = () => {
-  const  {name}  = useParams();
-  const [Playlist,setPlaylist] =useState();
+  const { name } = useParams();
+  const [Playlist, setPlaylist] = useState([]);
   const [currentPlaylistIndex, setCurrentPlaylistIndex] = useState(0);
-  const [showPlaylist, setShowPlaylist] = useState(false);
   const [showDropdown, setShowDropdown] = useState(null);
-
+  const UserPlaylist = usePlaylistsSelector();
+  const setPlaylists = useSetPlaylists();
+  const Navigate = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,12 +49,12 @@ const UserPlaylist = () => {
         const data = await fetchPlaylist(name);
         setPlaylist(data);
       } catch (error) {
-        console.log(error)
+        console.log(error);
         setPlaylist([]); // Set an empty array in case of an error to avoid 'undefined'
       }
     };
     fetchData();
-  }, [ name]);
+  }, [name]);
 
   const handleLoveClick = (index) => {
     // Dispatch action to update loved status in the Redux store
@@ -62,25 +70,77 @@ const UserPlaylist = () => {
       prevIndex === 0 ? Playlist.length - 1 : prevIndex - 1
     );
   };
+
   const handlePlaylistClick = (index) => {
     setCurrentPlaylistIndex(index);
   };
 
-  const handleDeleteFromPlaylist =(podcastId) => {
+  const handleDeleteFromPlaylist = async (podcastId) => {
+    try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/playlists/name/${name}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ podcast_id: podcastId }),
+      });
 
+      if (response.ok) {
+        setShowDropdown(!showDropdown);
+        alert("Deleted");
+
+        // Fetch the updated playlist after deletion
+        const updatedPlaylist = await fetchPlaylist(name);
+
+        // Dispatch the action with the updated playlist
+        setPlaylists(updatedPlaylist);
+        window.location.reload();
+      } else {
+        const errorData = await response.json();
+        alert(errorData.message);
+      }
+    } catch (error) {
+      // Handle network or other errors
+      console.error("Error deleting to playlist:", error);
+    }
+  };
+
+  const handleDeletePlaylist = async () => {
+    try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/playlists/name/${name}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        alert("Playlist deleted");
+        Navigate("/user")
+        // Optionally, redirect to another page or handle the deletion as needed
+      } else {
+        const errorData = await response.json();
+        alert(errorData.message);
+      }
+    } catch (error) {
+      // Handle network or other errors
+      console.error("Error deleting playlist:", error);
+    }
+  };
+
+  if (!Playlist) {
+    return <div>Loading...</div>;
   }
- 
- 
-  if (Playlist){
+
   return (
-    
     <div className="container mx-auto p-3">
       <h2 className="text-2xl font-semibold mb-2">{name} Podcasts</h2>
+
       <div className="flex">
         <div className="w-2/3 m-2">
           {Playlist &&
             Playlist.map((playlist, index) => (
-              
               <div
                 key={index}
                 className={`playlist-item border p-2 mb-2 rounded-lg bg-white transition duration-300 ease-in-out hover:bg-gray-200 flex items-center justify-between`}
@@ -115,42 +175,47 @@ const UserPlaylist = () => {
                     {formatDuration(playlist.duration)}
                   </span>
                   <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowDropdown(showDropdown === index ? null : index);
-                  }}
-                  className={`ml-2 text-gray-500 focus:outline-none ${
-                    showDropdown === index ? "text-blue-500" : "text-gray-500"
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faEllipsisH} className="h-4 w-4" />
-                </button>
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowDropdown(showDropdown === index ? null : index);
+                    }}
+                    className={`ml-2 text-gray-500 focus:outline-none ${
+                      showDropdown === index ? "text-blue-500" : "text-gray-500"
+                    }`}
+                  >
+                    <FontAwesomeIcon icon={faEllipsisH} className="h-4 w-4" />
+                  </button>
 
-                {showDropdown === index && (
-                  <div className="absolute top-full left-0 mt-1 z-20">
-                    <div
-                      id="dropdownDotsHorizontal"
-                      className="z-20 bg-white divide-y divide-blue-100 rounded-lg shadow w-32 dark:bg-blue-700 dark:divide-blue-600"
-                    >
-                      <ul className="py-1 text-xs text-gray-700 dark:text-gray-200">
-                        <li>
-                          <a
-                            className="block py-2 hover:bg-gray-100 dark:hover:bg-white-600 dark:hover:text-black text-center"
-                            onClick={() =>
-                              handleDeleteFromPlaylist(playlist._id)
-                            }
-                          >
-                            Remove
-                          </a>
-                          
-                        </li>
-                      </ul>
+                  {showDropdown === index && (
+                    <div className="absolute top-full left-0 mt-1 z-20">
+                      <div
+                        id="dropdownDotsHorizontal"
+                        className="z-20 bg-white divide-y divide-blue-100 rounded-lg shadow w-32 dark:bg-blue-700 dark:divide-blue-600"
+                      >
+                        <ul className="py-1 text-xs text-gray-700 dark:text-gray-200">
+                          <li>
+                            <a
+                              className="block py-2 hover:bg-gray-100 dark:hover:bg-white-600 dark:hover:text-black text-center"
+                              onClick={() =>
+                                handleDeleteFromPlaylist(playlist._id)
+                              }
+                            >
+                              Remove
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
                 </div>
               </div>
             ))}
+          <button
+            className="bg-red-500 mt-5 text-white py-2 px-4 rounded"
+            onClick={handleDeletePlaylist}
+          >
+            Delete Playlist
+          </button>
         </div>
 
         <div className="w-1/3 mt-2 relative z-10">
@@ -165,12 +230,7 @@ const UserPlaylist = () => {
         </div>
       </div>
     </div>
-  );}else{
-  return(<div>
-    loading
-  </div>)
-  }
+  );
 };
-
 
 export default UserPlaylist;

@@ -19,7 +19,7 @@ const PlaylistModal = ({ podcastId, onClose }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ podcastId: podcastId }),
+        body: JSON.stringify({ podcastId: podcastId   }),
       });
 
       if (response.ok) {
