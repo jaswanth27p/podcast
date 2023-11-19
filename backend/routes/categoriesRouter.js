@@ -13,7 +13,7 @@ const {validateAccount ,validateAdmin} = require("../middleware/validateUser")
 categoryRouter.get("/",validateAccount, getCategories);
 
 // Route to create a new category
-categoryRouter.post("/",validateAdmin, createCategory);
+categoryRouter.post("/" , createCategory);
 
 categoryRouter
   .route("/id/:id")

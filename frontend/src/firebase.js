@@ -3,13 +3,13 @@ import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
  
 const firebaseConfig = {
-  apiKey: "AIzaSyCdCKsfbnDWLSJ45CJtYfL7nswJv47kwrE",
-  authDomain: "podcast-9dd9f.firebaseapp.com",
-  projectId: "podcast-9dd9f",
-  storageBucket: "podcast-9dd9f.appspot.com",
-  messagingSenderId: "875512202842",
-  appId: "1:875512202842:web:9d0750b071b5f16fa8ba63",
-  measurementId: "G-HGYN5RC98N",
+  apiKey: "AIzaSyAlJEL1S7kFbMgR0Vb-RMvbl2dVo2eMzx8",
+  authDomain: "podcast-3341f.firebaseapp.com",
+  projectId: "podcast-3341f",
+  storageBucket: "podcast-3341f.appspot.com",
+  messagingSenderId: "54213931063",
+  appId: "1:54213931063:web:9f6544265dabb230f68fb2",
+  measurementId: "G-G36WHDVZ02",
 };
 
 // Initialize Firebase
