@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
-import { useNavigate , useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AudioPlayer from "./AudioPlayer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -41,7 +41,7 @@ const UserPlaylist = () => {
   const [showDropdown, setShowDropdown] = useState(null);
   const UserPlaylist = usePlaylistsSelector();
   const setPlaylists = useSetPlaylists();
-  const Navigate = useNavigate()
+  const Navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -117,7 +117,7 @@ const UserPlaylist = () => {
 
       if (response.ok) {
         alert("Playlist deleted");
-        Navigate("/user")
+        Navigate("/user");
         // Optionally, redirect to another page or handle the deletion as needed
       } else {
         const errorData = await response.json();
@@ -135,9 +135,16 @@ const UserPlaylist = () => {
 
   return (
     <div className="container mx-auto p-3">
-      <h2 className="text-2xl font-semibold mb-2">{name} Podcasts</h2>
-
-      <div className="flex">
+      <div className="sm:flex">
+        <h2 className="text-2xl font-semibold mb-2">{name} Podcasts</h2>
+        <button
+          className="bg-gray-500 text-white py-2 px-4 rounded ml-auto hover:bg-red-500"
+          onClick={handleDeletePlaylist}
+        >
+          Delete Playlist
+        </button>
+      </div>
+      <div className="flex flex-col sm:flex-row">
         <div className="w-2/3 m-2">
           {Playlist &&
             Playlist.map((playlist, index) => (
@@ -200,6 +207,10 @@ const UserPlaylist = () => {
                                 handleDeleteFromPlaylist(playlist._id)
                               }
                             >
+                              <FontAwesomeIcon
+                                icon={faTrash}
+                                className="h-4 w-4 mr-2"
+                              />
                               Remove
                             </a>
                           </li>
@@ -210,17 +221,12 @@ const UserPlaylist = () => {
                 </div>
               </div>
             ))}
-          <button
-            className="bg-red-500 mt-5 text-white py-2 px-4 rounded"
-            onClick={handleDeletePlaylist}
-          >
-            Delete Playlist
-          </button>
         </div>
 
-        <div className="w-1/3 mt-2 relative z-10">
+        <div className="mt-2 relative z-10">
           <AudioPlayer
             imgSrc={Playlist[currentPlaylistIndex]?.image_url}
+            title={Playlist[currentPlaylistIndex]?.title}
             podcastUrl={Playlist[currentPlaylistIndex]?.audio_url}
             duration={Playlist[currentPlaylistIndex]?.duration}
             playlists={Playlist}

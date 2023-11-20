@@ -27,7 +27,7 @@ const GenrePlaylists = () => {
   useEffect(() => {
     // Fetch the category data when the genre changes
     dispatchFetchCategory();
-    
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -50,10 +50,10 @@ const GenrePlaylists = () => {
   };
 
   return (
-    <div className="container mx-auto p-3">
+    <div className="container mx-auto p-3 ">
       <h2 className="text-2xl font-semibold mb-2">{genre} Podcasts</h2>
-      <div className="flex">
-        <div className="w-2/3 m-2">
+      <div className="flex flex-col sm:flex-row">
+      <div className="sm:w-2/3 m-2">
           {playlists.map((playlist, index) => (
             <div
               key={index}
@@ -104,17 +104,17 @@ const GenrePlaylists = () => {
                       id="dropdownDotsHorizontal"
                       className="z-20 bg-white divide-y divide-blue-100 rounded-lg shadow w-32 dark:bg-blue-700 dark:divide-blue-600"
                     >
-                      <ul className="py-1 text-xs text-gray-700 dark:text-gray-200">
+                      <ul className="py-1 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-500 rounded-lg">
                         <li>
                           <a
-                            className="block py-2 hover:bg-gray-100 dark:hover:bg-white-600 dark:hover:text-black text-center"
+                            className="block py-2 text-center"
                             onClick={() =>
                               setShowPlaylist(
                                 (prevShowPlaylist) => !prevShowPlaylist
                               )
                             }
                           >
-                            Playlist+=
+                            Playlist +=
                           </a>
                         </li>
                       </ul>
@@ -132,9 +132,11 @@ const GenrePlaylists = () => {
           ))}
         </div>
 
-        <div className="w-1/3 mt-2 relative z-10">
+        
+        <div className="mt-2 relative z-10">
           <AudioPlayer
             imgSrc={playlists[currentPlaylistIndex]?.image_url}
+            title={playlists[currentPlaylistIndex]?.title}
             podcastUrl={playlists[currentPlaylistIndex]?.audio_url}
             duration={playlists[currentPlaylistIndex]?.duration}
             playlists={playlists}

@@ -8,8 +8,9 @@
 .image{
 
     width: 20rem;
-    height: auto;
+    height: 20rem;
     border-radius: 0.5rem;
+    object-fit: cover;
 
 }
 
@@ -58,4 +59,10 @@
 .controls{
     display: flex;
     
+}
+
+@media (max-width: 767px) {
+    .player-card {
+        width: 100%;
+    }
 }

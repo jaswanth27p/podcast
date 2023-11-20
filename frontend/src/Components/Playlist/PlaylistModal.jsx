@@ -19,13 +19,13 @@ const PlaylistModal = ({ podcastId, onClose }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ podcastId: podcastId   }),
+        body: JSON.stringify({ podcastId: podcastId }),
       });
 
       if (response.ok) {
         // Handle success, e.g., close the modal
         onClose();
-        alert("Added")
+        alert("Added");
       } else {
         const errorData = await response.json();
         alert(errorData.message);
@@ -37,12 +37,12 @@ const PlaylistModal = ({ podcastId, onClose }) => {
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-10 text-black">
-      <div className="bg-white p-4 rounded-lg w-1/3">
+    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-20 text-black z-10">
+      <div className="bg-white p-4 rounded-lg md:w-1/3">
         {playlists.map((playlist) => (
           <div
             key={playlist._id}
-            className="flex items-center justify-between mb-2"
+            className="flex items-center justify-between mb-2 border border-gray-150 p-2 hover:bg-gray-100 rounded-lg"
           >
             <p>{playlist.name}</p>
             <button
@@ -54,7 +54,7 @@ const PlaylistModal = ({ podcastId, onClose }) => {
           </div>
         ))}
         <button
-          className="text-center bg-red-500 text-white px-2 py-1 rounded mt-2"
+          className="text-center hover:bg-red-500 text-white px-2 py-1 rounded mt-2 bg-gray-500"
           onClick={onClose}
         >
           Close

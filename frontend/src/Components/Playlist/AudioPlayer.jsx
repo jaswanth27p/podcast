@@ -5,6 +5,7 @@ import "./AudioPlayer.css";
 
 const AudioPlayer = ({
   imgSrc,
+  title,
   podcastUrl,
   duration,
   handleNext,
@@ -65,7 +66,7 @@ const AudioPlayer = ({
   return (
     <div className="player-card">
       <img src={imgSrc} alt="Cover Image" className="image" />
-
+      <h2 className="font-semibold mt-2 overflow-hidden whitespace-nowrap overflow-ellipsis">{title}</h2>
       <input
         type="range"
         min="0"

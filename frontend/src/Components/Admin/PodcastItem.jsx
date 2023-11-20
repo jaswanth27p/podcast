@@ -16,7 +16,7 @@ const PodcastItem = ({
     >
       <div className="text-sm mb-2 md:mb-0 md:ml-2">{slNo}</div>
       <div className="ml-2 md:ml-3">
-        <img src={img} alt="image" className="h-11 w-11 rounded" />
+        <img src={img} alt="image" className="h-11 w-11 rounded object-cover object-center" />
       </div>
       <div className="mt-2 md:mt-0 md:ml-3">
         <div className="font-semibold text-md">{title}</div>
