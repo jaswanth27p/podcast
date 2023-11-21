@@ -19,7 +19,6 @@ export default function Navbar() {
   const navigate = useNavigate();
   const user = useUserSelector(); // Use the selector to get user data
   const clearUser = useClearUser(); // Use the action to clear user data
-  
 
   const handleLogout = async () => {
     try {
@@ -51,7 +50,16 @@ export default function Navbar() {
               component="div"
               sx={{ flexGrow: 1 }}
             >
-              <Link to="/">PodCast</Link>
+              <div className="flex items-center ml-3">
+                <Link to="/" className="flex items-center">
+                  <img
+                    src="/logo.png"
+                    alt="Logo"
+                    className="h-10 w-10 md:h-10 md:w-10 mr-2 rounded-full object-cover"
+                  />
+                  <span className="text-2xl font-bold">PodCast</span>
+                </Link>
+              </div>
             </Typography>
 
             <button
@@ -94,7 +102,7 @@ export default function Navbar() {
 
       {isMenuOpen && (
         <div className="fixed top-0 left-0 w-screen h-screen flex items-top justify-end z-50 bg-white bg-opacity-70 mobile-menu">
-          <div className="bg-blue-500 pt-10 p-4 rounded-md shadow-md text-white">
+          <div className="bg-blue-500 pt-10 p-4 shadow-md text-white">
             <button
               onClick={() => setIsMenuOpen(false)}
               className="absolute top-2 right-2 hover:text-gray-700"

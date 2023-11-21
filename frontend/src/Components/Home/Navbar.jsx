@@ -18,7 +18,12 @@ const Navbar = ({ onOpen }) => {
     <>
       <nav className="bg-blue-100 p-3 shadow container m-auto flex justify-between items-center">
         <div className="flex items-center ml-3">
-          <Link to="/">
+          <Link to="/" className="flex items-center">
+            <img
+              src="/logo.png"
+              alt="Logo"
+              className="h-10 w-10 md:h-10 md:w-10 mr-2 rounded-full object-cover"
+            />
             <span className="text-2xl font-bold">PodCast</span>
           </Link>
         </div>
