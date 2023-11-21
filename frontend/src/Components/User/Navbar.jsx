@@ -53,7 +53,7 @@ export default function Navbar() {
               <div className="flex items-center ml-3">
                 <Link to="/" className="flex items-center">
                   <img
-                    src="/logo.png"
+                    src="/logo.gif"
                     alt="Logo"
                     className="h-10 w-10 md:h-10 md:w-10 mr-2 rounded-full object-cover"
                   />
