@@ -37,7 +37,7 @@ const PlaylistModal = ({ podcastId, onClose }) => {
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-20 text-black z-10">
+    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-20 text-black z-20">
       <div className="bg-white p-4 rounded-lg md:w-1/3 sm:w-full">
         {playlists.map((playlist) => (
           <div

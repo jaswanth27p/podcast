@@ -91,7 +91,7 @@ const GenrePlaylists = () => {
                     e.stopPropagation();
                     setShowDropdown(showDropdown === index ? null : index);
                   }}
-                  className={`ml-2 text-gray-500 focus:outline-none ${
+                  className={`ml-2 text-gray-500 focus:outline-none  ${
                     showDropdown === index ? "text-blue-500" : "text-gray-500"
                   }`}
                 >
@@ -107,7 +107,7 @@ const GenrePlaylists = () => {
                       <ul className="py-1 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-500 rounded-lg">
                         <li>
                           <a
-                            className="block py-2 text-center"
+                            className="block py-2 z-10 text-center"
                             onClick={() =>
                               setShowPlaylist(
                                 (prevShowPlaylist) => !prevShowPlaylist
@@ -133,7 +133,7 @@ const GenrePlaylists = () => {
         </div>
 
         
-        <div className="mt-2 relative z-10">
+        <div className="mt-2 relative ">
           <AudioPlayer
             imgSrc={playlists[currentPlaylistIndex]?.image_url}
             title={playlists[currentPlaylistIndex]?.title}
