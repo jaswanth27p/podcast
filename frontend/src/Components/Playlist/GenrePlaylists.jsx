@@ -53,7 +53,7 @@ const GenrePlaylists = () => {
     <div className="container mx-auto p-3 ">
       <h2 className="text-2xl font-semibold mb-2">{genre} Podcasts</h2>
       <div className="flex flex-col sm:flex-row">
-      <div className="sm:w-2/3 m-2">
+      <div className="sm:w-full m-2">
           {playlists.map((playlist, index) => (
             <div
               key={index}

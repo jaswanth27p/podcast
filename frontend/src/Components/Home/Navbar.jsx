@@ -16,7 +16,7 @@ const Navbar = ({ onOpen }) => {
 
   return (
     <>
-      <nav className="bg-blue-100 p-3 rounded-lg shadow container m-auto flex justify-between items-center">
+      <nav className="bg-blue-100 p-3 shadow container m-auto flex justify-between items-center">
         <div className="flex items-center ml-3">
           <Link to="/">
             <span className="text-2xl font-bold">PodCast</span>
@@ -56,7 +56,7 @@ const Navbar = ({ onOpen }) => {
 
       {isMenuOpen && (
         <div className="fixed top-0 left-0 w-screen h-screen flex items-top justify-end z-50 bg-white bg-opacity-70">
-          <div className="bg-blue-500 text-white pt-6 p-4 rounded-md shadow-md">
+          <div className="bg-blue-500 text-white pt-6 p-4 shadow-md">
             <button
               onClick={() => setIsMenuOpen(false)}
               className="absolute top-2 right-2 hover:text-gray-700"

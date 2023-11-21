@@ -26,7 +26,7 @@ const Latest = () => {
     <div className="container mx-auto sm:px-2 md:px-5">
       <h2 className="text-lg px-2 py-2 font-semibold sm:text-xl">Latest</h2>
       <div className="overflow-x-auto ">
-      <div className="flex flex-col sm:flex-row gap-5 min-w-max justify-center">
+      <div className="flex flex-wrap gap-5 justify-center">
           {reversedData.map((podcast, index) => (
             <PodcastCard
               key={index}

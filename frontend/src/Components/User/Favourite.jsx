@@ -11,8 +11,7 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
-import { useSetPlaylists  } from "../../redux/reducers/playlists"; 
-
+import { useSetPlaylists } from "../../redux/reducers/playlists";
 
 const fetchPlaylists = async () => {
   try {
@@ -29,7 +28,7 @@ const fetchPlaylists = async () => {
   }
 };
 
-const createPlaylist = async (name ) => {
+const createPlaylist = async (name) => {
   try {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const response = await fetch(`${backendUrl}/playlists`, {
@@ -61,16 +60,16 @@ const Favourite = () => {
   const [newPlaylistName, setNewPlaylistName] = useState("");
   const navigate = useNavigate();
   const [error, setError] = useState("");
-  const setPlaylist =useSetPlaylists();
+  const setPlaylist = useSetPlaylists();
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchPlaylists();
       setPlaylists(data);
-      setPlaylist(data)
+      setPlaylist(data);
     };
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getRandomColor = () => {
@@ -129,10 +128,7 @@ const Favourite = () => {
           <div className="container mx-auto overflow-x-auto">
             <div className="flex flex-wrap gap-5">
               {playlists.map((playlist, index) => (
-                <div
-                  onClick={() => handlePlaylistSelect(playlist)}
-                  key={index}
-                >
+                <div onClick={() => handlePlaylistSelect(playlist)} key={index}>
                   <Cards
                     key={index} // Add a unique key here, for example, playlist.id if available
                     title={playlist.name}
@@ -209,6 +205,5 @@ const Cards = ({ title, backgroundColor }) => (
     </CardContent>
   </Card>
 );
-
 
 export default Favourite;

@@ -38,15 +38,15 @@ const PlaylistModal = ({ podcastId, onClose }) => {
 
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-20 text-black z-10">
-      <div className="bg-white p-4 rounded-lg md:w-1/3">
+      <div className="bg-white p-4 rounded-lg md:w-1/3 sm:w-full">
         {playlists.map((playlist) => (
           <div
             key={playlist._id}
-            className="flex items-center justify-between mb-2 border border-gray-150 p-2 hover:bg-gray-100 rounded-lg"
+            className="flex flex-col sm:flex-row items-center justify-between mb-2 border border-gray-150 p-2 hover:bg-gray-100 rounded-lg"
           >
             <p>{playlist.name}</p>
             <button
-              className="text-center bg-green-500 text-white px-2 py-1 rounded ml-1"
+              className="text-center bg-green-500 text-white px-2 py-1 rounded mt-2 sm:mt-0"
               onClick={() => handleAddToPlaylist(playlist._id)}
             >
               Add
