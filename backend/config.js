@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 mongoose.set("strictQuery", true);
 mongoose.connect(
-  `mongodb+srv://jaswanth27p:<password>@cluster0.9ijk5io.mongodb.net/`
+  `mongodb+srv://jaswanth27p:BO7uK1V7ywROiH0F@cluster0.9ijk5io.mongodb.net/`
 );
 
 const db = mongoose.connection;
